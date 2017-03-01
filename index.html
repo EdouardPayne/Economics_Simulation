@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+        
+        <script src="files/amcharts/amcharts.js"></script>
+        <script src="files/amcharts/serial.js"></script>
+        <script src="files/amcharts/pie.js"></script>
+        <script src="files/entities.js"></script>
+        <script src="files/updateUI.js"></script>
+        <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+        <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+        <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <title>Business Economics Games</title>
+  </head>
+
+  <body>
+        <div class="intro">
+                <h3>Welcome to the business game! Enter your company details </h3>
+                <br>
+                
+
+                <br>    
+                        
+                <form>
+                Enter Business Name:
+                <br>
+                <input type="text" name="name" id="name" placeholder="Your Name">
+                <br>
+                <br>
+                <input type="text" name="capital" id="capital" placeholder="Capital">
+                <br>
+                <br>
+                <input type="text" name="employees" id="employees" placeholder="employees">
+                <br>
+                Select Sector:
+                <br>
+                <select id="sectorPrices">
+                  <option value="primary">Primary sector</option>
+                  <option value="secondary">Secondary / manufacturing sector</option>
+                  <option value="service">Service / ‘tertiary’ sector</option>
+                </select>
+                </form>
+                <br>
+                <button id="businessSubmit">Submit Business Details</button>
+        </div>
+        <div class="overview">
+          <button onclick="Tick()" id="nextday">Next Day</button>
+
+          <div class="marketDetails">
+            <table style="width:100%">
+              <tr>
+                <th>Sector Name</th>
+                <th>Total Demand </th>
+                <th>Total Supply</th> 
+                <th>Price (Demand/Supply)</th>
+              </tr>
+              <tr>
+                <td>Primary sector</td>
+                <td id="demand_1"></td>
+                <td id="supply_1"></td>  
+                <td id="price_1"></td> 
+              </tr>
+              <tr>
+                <td>Secondary / manufacturing sector</td>
+                <td id="demand_2"></td> 
+                <td id="supply_2"></td> 
+                <td id="price_2"></td> 
+              </tr>
+              <tr>
+                <td>Service / ‘tertiary’ sector</td>
+                <td id="demand_3"></td> 
+                <td id="supply_3"></td>
+                <td id="price_3"></td>
+              </tr>
+              <tr>
+                <td>Labour</td>
+                <td id="demand_4"></td> 
+                <td id="supply_4"></td>
+                <td id="price_4"></td>
+              </tr>
+              <tr>
+                <td>Capital</td>
+                <td id="demand_5"></td> 
+                <td id="supply_5"></td>
+                <td id="price_5"></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="companyDetails">
+            <table style="width:100%">
+              <tr>
+                <th>Company Name</th>
+                <th>Number of Employees</th>
+                <th>Number of Capital</th> 
+                <th>Forecasted income</th> 
+                <th>Cash</th>
+              </tr>
+              <tr>
+                <td id="companyName"></td>
+                <td id="numberEmployees"></td>
+                <td id="numberCapital"></td>  
+                <td id="foreCastedIncome"></td>
+                <td id="cash"></td> 
+              </tr>
+            </table>
+          </div>
+
+          <div class="updateCompanyDetails">
+            <h3>Update Company Details</h3>
+            <form>
+              <input type="text" id="capitalUpdate" placeholder="Update Capital Amount"></input>
+              <input type="text" id="employeesUpdate" placeholder="Update Employee Amount"></input>
+              <button type='button' id="businessUpdate">Update Business Details</button>
+            </form>
+          </div>
+
+          <div class="upgradeBusiness">
+            <h3> You Can Upgrade your business here </h3>
+
+            <button type="button" id="startUp" disabled>Start-up</button>
+            <button type="button" id="mediumFirm" disabled>Medium Firm</button>
+
+          </div>
+
+          <div class="diagrams">
+            <div id="marketShare" style="width: 640px; height: 400px;"></div>
+            <div id="priceLabour" style="width: 640px; height: 400px;"></div>
+            <div id="priceCapital" style="width: 640px; height: 400px;"></div>
+            <div id="GDPLevel" style="width: 640px; height: 400px;"></div>
+          </div>
+        </div>  
+  </body>
+
+
+    <script>
+ 
+    var game = {
+      tickCount:0,
+    }
+
+
+
+
+
+
+
+    Market.list = {};
+    Competitor.list = {};
+
+start_game = function(){
+  $( ".overview" ).hide();
+
+   //when the <submit> button is clicked
+  $('#businessSubmit').click(function(){
+  //store the user's entry in a variable
+
+
+  
+    var name = document.getElementById('name').value; //find business name
+    var sector = document.getElementById("sectorPrices").value; //find sector
+    var capital = parseFloat(document.getElementById('capital').value); //find business name
+    var employees = parseFloat(document.getElementById('employees').value); //find business name
+    $( ".intro" ).hide();
+   
+    $( ".overview" ).show();
+
+
+    player = new Business(name, sector, capital, employees, 'player',2,10);
+
+
+    $("#companyName").append(player.name);
+    $("#numberEmployees").append(player.employees);
+    $("#numberCapital").append(player.capital);
+    $("#foreCastedIncome").append(player.income-player.expenses);
+    $("#cash").append(player.cash);
+    //update the html in the second form to show the user's entered name  
+
+    });
+}
+
+updateCompanyDetails = function(){
+  $('#businessUpdate').click(function(){
+      player.capital = document.getElementById('capitalUpdate').value;
+      player.employees =  document.getElementById('employeesUpdate').value;
+      $("#numberEmployees").text(player.employees);
+      $("#numberCapital").text(player.capital);
+
+  });
+
+  $('#startUp').click(function(){
+      player.firstUpgrade();
+      $('#startUp').attr('disabled', true);
+  });
+}
+     
+updateCompanyDetails();
+
+
+
+function produceGoods(){
+  for(var key in Competitor.list){
+    Competitor.list[key].produce(); //loops through businesses and produces output and demand
+  } 
+  player.produce();
+}
+
+function generatePrice(){
+  for(var key in Market.list){
+    Market.list[key].generatePrice(); //loops through markets and determines the price of these goods
+  }
+}
+
+
+function sellGoods(){
+  for(var key in Competitor.list){
+    Competitor.list[key].exchange(); //loops through businesses and sells/buys good prdouced.
+  }
+  player.exchange();
+}
+
+function checkCashFlow(){
+  for(var key2 in Competitor.list){
+   // Business.list[key2].generateExpenseFactor();
+    Competitor.list[key2].checkCashFlow(); 
+  }
+
+  player.checkCashFlow();
+}
+
+
+
+start_game();
+
+Tick = function(){
+
+
+  produceGoods();
+
+  generatePrice();
+
+  sellGoods();
+
+  checkCashFlow();
+
+  
+  for(var key3 in Competitor.list){
+   // Business.list[key2].generateExpenseFactor();
+    Competitor.list[key3].upgrade() 
+  } 
+  player.upgrade();
+
+  updateUI();
+
+
+
+  updateChart();
+  Market.list[4].updateChartLabour();
+  Market.list[5].updateChartCapital();
+  Market.list[5].consumerDemand();
+
+
+  for(var key in Market.list){
+    Market.list[key].newEntrants();
+    Market.list[key].resetDay(); //Ends the day
+  }
+  
+
+  game.tickCount++;
+  
+}
+            Market("primary",0, 0, 1);
+            Market("secondary",0, 0, 2);
+            Market("service",0, 0, 3);
+            Market("labour",5, 0, 4);
+            Market("capital",5, 0, 5);
+            
+Competitor.generate(20); //Generate competitor
+
+
+
+</script>
+
+<script src="files/chartdata.js"></script>
+
+
+</script>
+</html>
