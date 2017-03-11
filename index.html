@@ -58,33 +58,33 @@
               </tr>
               <tr>
                 <td>Primary sector</td>
-                <td id="demand_1"></td>
-                <td id="supply_1"></td>  
-                <td id="price_1"></td> 
+                <td id="demand_primary"></td>
+                <td id="supply_primary"></td>  
+                <td id="price_primary"></td> 
               </tr>
               <tr>
                 <td>Secondary / manufacturing sector</td>
-                <td id="demand_2"></td> 
-                <td id="supply_2"></td> 
-                <td id="price_2"></td> 
+                <td id="demand_secondary"></td> 
+                <td id="supply_secondary"></td> 
+                <td id="price_secondary"></td> 
               </tr>
               <tr>
                 <td>Service / ‘tertiary’ sector</td>
-                <td id="demand_3"></td> 
-                <td id="supply_3"></td>
-                <td id="price_3"></td>
+                <td id="demand_service"></td> 
+                <td id="supply_service"></td>
+                <td id="price_service"></td>
               </tr>
               <tr>
                 <td>Labour</td>
-                <td id="demand_4"></td> 
-                <td id="supply_4"></td>
-                <td id="price_4"></td>
+                <td id="demand_labour"></td> 
+                <td id="supply_labour"></td>
+                <td id="price_labour"></td>
               </tr>
               <tr>
                 <td>Capital</td>
-                <td id="demand_5"></td> 
-                <td id="supply_5"></td>
-                <td id="price_5"></td>
+                <td id="demand_capital"></td> 
+                <td id="supply_capital"></td>
+                <td id="price_capital"></td>
               </tr>
             </table>
           </div>
@@ -213,6 +213,12 @@ function generatePrice(){
   }
 }
 
+function cyclicalDemand(){
+  for(var key in Market.list){
+    Market.list[key].demand = Market.list[key].demand * Market.list[key].cycliacalDemand();
+  }
+}
+
 
 function sellGoods(){
   for(var key in Competitor.list){
@@ -239,6 +245,8 @@ Tick = function(){
 
   produceGoods();
 
+  cyclicalDemand();
+
   generatePrice();
 
   sellGoods();
@@ -257,9 +265,9 @@ Tick = function(){
 
 
   updateChart();
-  Market.list[4].updateChartLabour();
-  Market.list[5].updateChartCapital();
-  Market.list[5].consumerDemand();
+  Market.list["labour"].updateChartLabour();
+  Market.list["capital"].updateChartCapital();
+
 
 
   for(var key in Market.list){
@@ -271,11 +279,11 @@ Tick = function(){
   game.tickCount++;
   
 }
-            Market("primary",0, 0, 1);
-            Market("secondary",0, 0, 2);
-            Market("service",0, 0, 3);
-            Market("labour",5, 0, 4);
-            Market("capital",5, 0, 5);
+            Market("primary",0, 0);
+            Market("secondary",0, 0);
+            Market("service",0, 0);
+            Market("labour",5, 0);
+            Market("capital",5, 0);
             
 Competitor.generate(20); //Generate competitor
 

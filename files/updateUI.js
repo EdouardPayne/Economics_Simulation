@@ -5,13 +5,12 @@ function updateUI(){
 }
 
 function updateSectorPrices(){
-  for (var i = 1; i < 6; i++) { //need to fix this so that it knows how many sectors are in a market, instead of manually entering the data.
-    for(var key2 in Market.list[i]){ //loop through each sector in the market     
-      $( "#demand_"+i ).html(Market.list[i].demand); //get the amount saved and show result.
-      $( "#supply_"+i ).html(Market.list[i].supply); 
-      $( "#price_"+i ).html(Market.list[i].price); 
-    }
-  }	
+for (var key in Market.list) {
+	$( "#demand_"+key ).html(Market.list[key].demand)
+	$( "#supply_"+key ).html(Market.list[key].supply)
+	$( "#price_"+key ).html(Market.list[key].price)
+
+	}
 }
 
 function updateCompanyDetailsUI(){

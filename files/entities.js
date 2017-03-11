@@ -48,7 +48,7 @@
          self.expenses = 0;
          self.networth = self.cash;
 
-         var produced = self.capital*self.employees;
+         
           self.produce = function(){   //Business         
             for(var key in Market.list){
               if(self.sector==Market.list[key].sector){
@@ -92,24 +92,24 @@
 
 
           self.generateIncome = function(key){  //Business
-            self.income = (Market.list[key].price * produced)*self.efficiency;  
+            self.income = (Market.list[key].price * (self.capital*self.employees))*self.efficiency;  
           }
 
           self.generateProduceExpense = function(key){ //Business
-            self.expenses = (Market.list[key].price * produced)/self.efficiency;
+            self.expenses = (Market.list[key].price * (self.capital*self.employees))/self.efficiency;
           }
 
           self.generateSupply = function(key){ //Business
-            Market.list[key].supply  += produced; //Sell the goods onto the market
+            Market.list[key].supply  += (self.capital*self.employees); //Sell the goods onto the market
           }
 
           self.generateDemand = function(key){ //Business
-            Market.list[key].demand +=produced;
+            Market.list[key].demand +=(self.capital*self.employees);
           }
 
           self.generateExpenseFactor = function(){ //Business
-            generateExpenseCapital = Market.list[5].price * self.capital;
-            generateExpenseLabour = Market.list[4].price * self.employees;
+            generateExpenseCapital = Market.list["capital"].price * self.capital;
+            generateExpenseLabour = Market.list["labour"].price * self.employees;
 
             self.expenses += (generateExpenseCapital + generateExpenseLabour)/self.efficiency;
           }
@@ -145,7 +145,7 @@
               console.log("Hello Start-up");
               self.upgrades['Start-up']=true;
               self.cash -= 5;
-              self.efficiency *= 10;
+              self.efficiency *= 5;
               self.employees *= 10;
               self.capital *= 10;
               self.networth += 5;
@@ -155,7 +155,7 @@
               console.log("Hello Medium Firm");
               self.upgrades['Medium Firm']=true;
               self.cash -= 500;
-              self.efficiency *= 10;
+              
               self.employees *= 10;
               self.capital *= 10;
               self.networth += 500;
@@ -166,16 +166,15 @@
           return self;
       };
 
-      function Market(sector, supply, demand, id){
+      function Market(sector, supply, demand){
           var self = {
             sector:sector,
             supply:supply,
             demand:demand,
-            id:id,
           }
           self.generatePrice = function(){
             
-            if(self.id==5 || self.id==4 ){
+            if(self.sector=="capital" || self.sector=="labour"  ){
               self.supply=5;
             }
             self.price = self.demand/self.supply;
@@ -193,8 +192,16 @@
             self.price = 0;
           }
 
-          self.consumerDemand = function(){
-           console.log(Math.sin(Math.PI * (game.tickCount/180))+5);
+          self.cycliacalDemand = function(){
+           return Math.sin(Math.PI * ((game.tickCount/180)*16))+5;
+          }
+
+          self.shock = function(){
+            shockChance = Math.random();
+
+            if(shockChance<=0.01){
+              Market.list[5]
+            }
           }
 
 
@@ -226,7 +233,7 @@
     
         
 
-          Market.list[id] = self;
+          Market.list[sector] = self;
 
           return self
       };
