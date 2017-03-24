@@ -2,6 +2,7 @@ function updateUI(){
 	updateSectorPrices();
 	updateCompanyDetailsUI();
 	updateGDP();
+	//Update Immigration/Capital Changes
 }
 
 function updateSectorPrices(){

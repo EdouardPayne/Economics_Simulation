@@ -1,5 +1,10 @@
-      function Competitor(name, sector, capital, employees, type, id, efficiency){
-         var self = Business(name, sector, capital, employees, type, id, efficiency);
+markets = ["Primary", "Secondary", "Service"]
+countries = ["France", "United Kingdom", "Tajikstan"]
+
+
+
+    function Competitor(name, sector, capital, employees, type, id, efficiency, country) {
+         var self = Business(name, sector, capital, employees, type, id, efficiency, country);
 
           self.upgrade = function(){ //Competitor
             if(self.cash>5 && self.upgrades['Start-up']==false){
@@ -28,7 +33,46 @@
           return self;
       };
 
-      function Business(name, sector, capital, employees, type, id, efficiency) {
+      function Player(name, sector, capital, employees, type, id, efficiency, country){
+         var self = Business(name, sector, capital, employees, type, id, efficiency, country);
+         self.stock=0;
+         
+
+         self.predictiveCost = function(employees, capital){           
+          for(key in Country.list){
+              if(self.country==Country.list[key].country){
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="labor"){
+                    priceOfLabor = Country.list[key][key2].price
+
+                  }
+                  if(Country.list[key][key2].name=="capital"){
+                    priceOfCapital = Country.list[key][key2].price
+                    break;
+                  }
+                }
+
+
+                costOfLabor = priceOfLabor*employees; 
+                costOfCapital = priceOfCapital*capital; 
+                totalCost = costOfCapital + costOfLabor;
+                return {
+                      "laborCost": costOfLabor,
+                      "capitalCost": costOfCapital,
+                      "totalCost": totalCost,
+                      "priceOfCapital": costOfCapital,
+                      "priceOfLabor": priceOfLabor
+
+                };
+                self.expenses += (CostOfCapital + CostOfLabor)/self.efficiency;
+                break;
+              }
+            }
+          }
+          return self;
+        }
+
+      function Business(name, sector, capital, employees, type, id, efficiency, country) {
           var self = {
           name:name,  
           sector:sector,
@@ -36,7 +80,8 @@
           employees:employees,
           type:type,
           id:id,
-          efficiency:efficiency,
+          efficiency: efficiency,
+          country: country,
           upgrades: {'Start-up' : false,
                      'Medium Firm' : false,
                      'Large Firm' : false, },
@@ -48,44 +93,62 @@
          self.expenses = 0;
          self.networth = self.cash;
 
-         
+         self.demandOfFactors = function(){
+          for(var key2 in Country.list){
+            if(self.country==Country.list[key2].country){
+              console.log("Match");
+              self.addDemandofFactors(key2)
+            }
+          }
+         }
+
+        self.addDemandofFactors = function(key2){
+            for(key3 in Country.list[key2]){
+              if(Country.list[key2][key3].name=="labor"){
+                Country.list[key2][key3].demand += self.employees
+              } else if (Country.list[key2][key3].name=="capital"){
+                Country.list[key2][key3].demand += self.capital
+              }
+            }
+          }
           self.produce = function(){   //Business         
             for(var key in Market.list){
-              if(self.sector==Market.list[key].sector){
-                self.generateSupply(key);
-              } 
-              if(self.sector=="primary" && Market.list[key].sector=="secondary"){
-                self.generateDemand(key);
-              } else if(self.sector=="secondary" && Market.list[key].sector=="service"){
-                self.generateDemand(key);
-              } else if (self.sector=="service" && Market.list[key].sector=="primary"){
-                self.generateDemand(key);
+              if(self.country==Market.list[key].country){
+                if(self.sector==Market.list[key].sector){
+                 self.generateSupply(key)
+                }  
+                if(self.sector=="Primary" && Market.list[key].sector=="Secondary"){
+                  self.generateDemand(key)
+                } else if (self.sector=="Secondary" && Market.list[key].sector=="Service"){
+                  self.generateDemand(key);
+                } else if (self.sector=="Service" && Market.list[key].sector=="Primary"){
+                  self.generateDemand(key);
+                }
               }
-              if(Market.list[key].sector=="labour") {
-                Market.list[key].demand += self.employees; 
-              }
-              if(Market.list[key].sector=="capital") {
-                Market.list[key].demand += self.capital; 
-              };
-            }               
+            } 
+
           }
 
           self.exchange = function(){
-            for(var key in Market.list){ //Business
-              if(self.sector==Market.list[key].sector){
-                self.generateIncome(key);
-
-              }
-              if(self.sector=="primary" && Market.list[key].sector=="secondary"){
-                self.generateProduceExpense(key);
-                self.generateExpenseFactor();
-              } else if(self.sector=="secondary" && Market.list[key].sector=="service"){
-                self.generateProduceExpense(key);
-                self.generateExpenseFactor();
-              } else if (self.sector=="service" && Market.list[key].sector=="primary"){
-                self.generateProduceExpense(key);
-                self.generateExpenseFactor();
-                } 
+            for(var key in Market.list){
+              if(self.country==Market.list[key].country){
+                if(self.sector==Market.list[key].sector){
+                  self.generateIncome(key); //Sell the product, need to get taxed
+                }
+                if(self.sector=="Primary" && Market.list[key].sector=="Secondary"){
+                  self.generateProduceExpense(key);
+                  self.generateExpenseFactor(); //Buy the produce, need to get taxed 
+                  break;
+                } else if(self.sector=="Secondary" && Market.list[key].sector=="Service"){
+                  self.generateProduceExpense(key);
+                  self.generateExpenseFactor();
+                  break;
+                } else if (self.sector=="Service" && Market.list[key].sector=="Primary"){
+                  self.generateProduceExpense(key);
+                  self.generateExpenseFactor();
+                  break;
+                  } 
+                }
               }
             }
 
@@ -95,23 +158,44 @@
             self.income = (Market.list[key].price * (self.capital*self.employees))*self.efficiency;  
           }
 
-          self.generateProduceExpense = function(key){ //Business
+          self.generateProduceExpense = function(key){ //This function looks at how much it costs to purchase raw materials
+
             self.expenses = (Market.list[key].price * (self.capital*self.employees))/self.efficiency;
+          }
+
+          self.generateExpenseFactor = function(){ //This function looks at how much it costs to purchase labor and capital in respective countries.
+            
+            for(key in Country.list){
+              if(self.country==Country.list[key].country){
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="labor"){
+                    priceOfLabor = Country.list[key][key2].price
+
+                  }
+                  if(Country.list[key][key2].name=="capital"){
+                    priceOfCapital = Country.list[key][key2].price
+                    break;
+                  }
+                }
+
+                CostOfLabor = priceOfLabor*self.employees 
+                CostOfCapital = priceOfCapital*self.capital 
+
+                self.expenses += (CostOfCapital + CostOfLabor)/self.efficiency;
+                break;
+              }
+            }
+          
           }
 
           self.generateSupply = function(key){ //Business
             Market.list[key].supply  += (self.capital*self.employees); //Sell the goods onto the market
+            console.log("Generated supply " + Market.list[key].supply)
           }
 
           self.generateDemand = function(key){ //Business
             Market.list[key].demand +=(self.capital*self.employees);
-          }
-
-          self.generateExpenseFactor = function(){ //Business
-            generateExpenseCapital = Market.list["capital"].price * self.capital;
-            generateExpenseLabour = Market.list["labour"].price * self.employees;
-
-            self.expenses += (generateExpenseCapital + generateExpenseLabour)/self.efficiency;
+            console.log("Generated demand " + Market.list[key].demand)
           }
 
           self.checkCashFlow = function(){ //Business
@@ -166,17 +250,98 @@
           return self;
       };
 
-      function Market(sector, supply, demand){
+      function generateCountry() {
+          for (x = 0; x < countries.length; x++) {
+              country = countries[x];
+
+              supplyOfLabor = 5;
+              supplyOfCapital = 5;
+              supplyOfLand = 5;
+              Country(country, supplyOfLabor, supplyOfCapital, supplyOfLand)
+          }          
+      }
+
+      function Country(country, supplyOfLabor, supplyOfCapital, supplyOfLand) {
           var self = {
+          
+                  labor: {
+                      demand: 0,
+                      supply: supplyOfLabor,
+                      price: 0,
+                      name: "labor",
+                  },
+                  capital: {
+                      demand: 0,
+                      supply: supplyOfCapital,
+                      price: 0,
+                      name: "capital",
+                  },
+                  land: {
+                      demand:0,
+                      supply: supplyOfLand,
+                      price:0,
+                      name: "land",
+                  },
+
+
+
+            
+              country: country,
+          }
+          self.generatePrice = function(key){
+            
+            for(key2 in Country.list[key]){
+              Country.list[key][key2].price = Country.list[key][key2].demand/Country.list[key][key2].supply
+            }
+            
+          }
+
+          Country.list[country] = self;
+
+          return self
+      }
+
+      function generateMarket() {
+          id = 0
+           for (x = 0; x < countries.length; x++) {
+              countries[x]
+              for (y = 0; y < markets.length; y++) {
+                  markets[y]
+                  id++
+                  var sector = markets[y];
+                  var country = countries[x];
+                  var supply = 0;
+                  var demand = 0;
+                  var id = id
+                  
+        
+
+                  Market(sector, supply, demand, country, id)
+              }
+          }
+
+      }
+
+      function Market(sector, supply, demand, country, id){
+          var self = {
+              country: {
+                  sector: {
+                      supply: supply,
+                      demand: demand,
+                      sector: sector,
+                      price: 0,
+                  },
+                  
+              },
+
+            country:country,
             sector:sector,
             supply:supply,
             demand:demand,
           }
           self.generatePrice = function(){
             
-            if(self.sector=="capital" || self.sector=="labour"  ){
-              self.supply=5;
-            }
+
             self.price = self.demand/self.supply;
           }
 
@@ -207,16 +372,16 @@
 
 
 
-          self.updateChartLabour = function(){
-            if (typeof chartDataLabour == 'undefined') {
-              chartDataLabour = [];
+          self.updateChartLabor = function(){
+            if (typeof chartDataLabor == 'undefined') {
+              chartDataLabor = [];
             }
-            chartDataLabour.push({
+            chartDataLabor.push({
               date: game.tickCount,
               visits: self.price,
             });
-            priceLabour.validateData();
-            return chartDataLabour;
+            priceLabor.validateData();
+            return chartDataLabor;
             }
 
           self.updateChartCapital = function(){
@@ -233,7 +398,7 @@
     
         
 
-          Market.list[sector] = self;
+          Market.list[id] = self;
 
           return self
       };
@@ -244,14 +409,9 @@
             capitalAmount = Math.random() //Proportion of Capital of this Business
             employeeAmount = 1 - capitalAmount //Proportion of Employees of this Business 
 
-            sectorChance = Math.random()
-            if(sectorChance>0 && sectorChance<=0.33){
-              var sectorChoice = "primary";
-            } else if(sectorChance>0.33 && sectorChance<=0.66){
-              var sectorChoice = "secondary";
-            } else{
-              var sectorChoice = "service";
-            }
+            
+            
+
 
             var data = [
             {"Company": "Nullam Ut Nisi PC"},
@@ -359,11 +519,12 @@
             var name = data[Math.floor(Math.random()*100)].Company; 
             var capital = capitalAmount;
             var employees = employeeAmount;
-            var sector = sectorChoice;
+            var sector = markets[Math.floor(Math.random() * markets.length)]; //http://stackoverflow.com/questions/5915096/get-random-item-from-javascript-array
+            var country = countries[Math.floor(Math.random() * countries.length)]; //http://stackoverflow.com/questions/5915096/get-random-item-from-javascript-array
             var id = Math.random();
             var efficiency = Math.random()*10;
 
-            Competitor(name, sector, capital, employees, 'competitor', id, efficiency);
+            Competitor(name, sector, capital, employees, 'competitor', id, efficiency, country);
           };
 
         }

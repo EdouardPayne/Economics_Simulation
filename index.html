@@ -75,10 +75,10 @@
                 <td id="price_service"></td>
               </tr>
               <tr>
-                <td>Labour</td>
-                <td id="demand_labour"></td> 
-                <td id="supply_labour"></td>
-                <td id="price_labour"></td>
+                <td>Labor</td>
+                <td id="demand_labor"></td> 
+                <td id="supply_labor"></td>
+                <td id="price_labor"></td>
               </tr>
               <tr>
                 <td>Capital</td>
@@ -107,16 +107,21 @@
               </tr>
             </table>
           </div>
-
-          <div class="updateCompanyDetails">
-            <h3>Update Company Details</h3>
-            <form>
-              <input type="text" id="capitalUpdate" placeholder="Update Capital Amount"></input>
-              <input type="text" id="employeesUpdate" placeholder="Update Employee Amount"></input>
-              <button type='button' id="businessUpdate">Update Business Details</button>
-            </form>
+          <div class="manageProduction">
+            <div class="updateProductionDetails">
+              <h3>Update Production Details</h3>
+              <form>
+                <input input type="number" id="capitalUpdate" placeholder="Update Capital Amount"></input>
+                <input input type="number" id="employeesUpdate" placeholder="Update Employee Amount"></input>
+                <button type='button' id="productionUpdate">Update Business Details</button>
+              </form>
+              <h4>Estimated Cost</h4>
+              
+              <p>Capital Cost:</p> <span id="predictiveCapitalCost"></span>
+              <p>Labor Cost:</p><span id="predictiveLaborCost"></span>
+              <p>Total Cost:</p><span id="predictiveTotalCost"></span>
+            </div>
           </div>
-
           <div class="upgradeBusiness">
             <h3> You Can Upgrade your business here </h3>
 
@@ -127,7 +132,7 @@
 
           <div class="diagrams">
             <div id="marketShare" style="width: 640px; height: 400px;"></div>
-            <div id="priceLabour" style="width: 640px; height: 400px;"></div>
+            <div id="priceLabor" style="width: 640px; height: 400px;"></div>
             <div id="priceCapital" style="width: 640px; height: 400px;"></div>
             <div id="GDPLevel" style="width: 640px; height: 400px;"></div>
           </div>
@@ -149,6 +154,7 @@
 
     Market.list = {};
     Competitor.list = {};
+    Country.list = {};
 
 start_game = function(){
   $( ".overview" ).hide();
@@ -168,7 +174,7 @@ start_game = function(){
     $( ".overview" ).show();
 
 
-    player = new Business(name, sector, capital, employees, 'player',2,10);
+    player = new Player("Ed", "Primary", 2, 2, 'player',2,10, "France");
 
 
     $("#companyName").append(player.name);
@@ -181,8 +187,8 @@ start_game = function(){
     });
 }
 
-updateCompanyDetails = function(){
-  $('#businessUpdate').click(function(){
+updateProductionDetails = function(){
+  $('#productionUpdate').click(function(){
       player.capital = document.getElementById('capitalUpdate').value;
       player.employees =  document.getElementById('employeesUpdate').value;
       $("#numberEmployees").text(player.employees);
@@ -190,13 +196,32 @@ updateCompanyDetails = function(){
 
   });
 
+
   $('#startUp').click(function(){
       player.firstUpgrade();
       $('#startUp').attr('disabled', true);
   });
 }
-     
-updateCompanyDetails();
+
+
+updateProductionDetails();
+
+
+
+
+  $('#updateProductionDetails form, input').keyup(function(event){
+      employees = 0; 
+      capital = 0;
+      employees = document.getElementById('employeesUpdate').value;
+      capital = document.getElementById('capitalUpdate').value;
+      result = player.predictiveCost(employees, capital);
+      $("#predictiveLaborCost").text(result.laborCost);
+      $("#predictiveCapitalCost").text(result.capitalCost);
+      $("#predictiveTotalCost").text(result.totalCost);
+
+
+
+  });
 
 
 
@@ -204,12 +229,21 @@ function produceGoods(){
   for(var key in Competitor.list){
     Competitor.list[key].produce(); //loops through businesses and produces output and demand
   } 
-  player.produce();
+ 
+}
+
+function demandOfFactors(){
+  for(var key in Competitor.list){
+    Competitor.list[key].demandOfFactors(); //loops through businesses and produces output and demand
+  } 
 }
 
 function generatePrice(){
   for(var key in Market.list){
     Market.list[key].generatePrice(); //loops through markets and determines the price of these goods
+  }
+  for(var key in Country.list){
+    Country.list[key].generatePrice(key);
   }
 }
 
@@ -220,11 +254,11 @@ function cyclicalDemand(){
 }
 
 
-function sellGoods(){
+function exchangeGoods(){
   for(var key in Competitor.list){
     Competitor.list[key].exchange(); //loops through businesses and sells/buys good prdouced.
   }
-  player.exchange();
+  
 }
 
 function checkCashFlow(){
@@ -233,7 +267,7 @@ function checkCashFlow(){
     Competitor.list[key2].checkCashFlow(); 
   }
 
-  player.checkCashFlow();
+
 }
 
 
@@ -244,14 +278,21 @@ Tick = function(){
 
 
   produceGoods();
+  demandOfFactors();
 
   cyclicalDemand();
 
+  //Shocks();
+
   generatePrice();
 
-  sellGoods();
+  exchangeGoods();
 
   checkCashFlow();
+
+  //Immigration();
+
+  //InvestmentCapital();
 
   
   for(var key3 in Competitor.list){
@@ -259,16 +300,16 @@ Tick = function(){
     Competitor.list[key3].upgrade() 
   } 
   player.upgrade();
-
+player.produce(); 
   updateUI();
 
 
-
+/*
   updateChart();
-  Market.list["labour"].updateChartLabour();
+  Market.list["labor"].updateChartLabor();
   Market.list["capital"].updateChartCapital();
 
-
+*/
 
   for(var key in Market.list){
     Market.list[key].newEntrants();
@@ -279,11 +320,9 @@ Tick = function(){
   game.tickCount++;
   
 }
-            Market("primary",0, 0);
-            Market("secondary",0, 0);
-            Market("service",0, 0);
-            Market("labour",5, 0);
-            Market("capital",5, 0);
+
+generateMarket();
+generateCountry();
             
 Competitor.generate(20); //Generate competitor
 
