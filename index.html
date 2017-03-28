@@ -117,9 +117,20 @@
               </form>
               <h4>Estimated Cost</h4>
               
-              <p>Capital Cost:</p> <span id="predictiveCapitalCost"></span>
-              <p>Labor Cost:</p><span id="predictiveLaborCost"></span>
-              <p>Total Cost:</p><span id="predictiveTotalCost"></span>
+              <p>Capital Cost:</p> <span id="capitalCost"></span>
+              <p>Labor Cost:</p><span id="laborCost"></span>
+              <p>Total Cost:</p><span id="totalCost"></span>
+
+              <h4>Estimated Income</h4>
+              
+              <p>Price of Output:</p> <span id="priceOutput"></span>
+              <p>Quantity:</p><span id="quantityOutput"></span>
+              <p>Income:</p><span id="incomeOutput"></span>
+
+              <h4>Profit</h4>
+              
+              <p>Profit</p> <span id="profitGoods"></span>
+
             </div>
           </div>
           <div class="upgradeBusiness">
@@ -146,7 +157,11 @@
       tickCount:0,
     }
 
-
+var filterInt = function(value) {
+  if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value))
+    return Number(value);
+  return NaN;
+}
 
 
 
@@ -175,6 +190,8 @@ start_game = function(){
 
 
     player = new Player("Ed", "Primary", 2, 2, 'player',2,10, "France");
+
+    player.cash = 50;
 
 
     $("#companyName").append(player.name);
@@ -212,14 +229,29 @@ updateProductionDetails();
   $('#updateProductionDetails form, input').keyup(function(event){
       employees = 0; 
       capital = 0;
-      employees = document.getElementById('employeesUpdate').value;
-      capital = document.getElementById('capitalUpdate').value;
-      result = player.predictiveCost(employees, capital);
-      $("#predictiveLaborCost").text(result.laborCost);
-      $("#predictiveCapitalCost").text(result.capitalCost);
-      $("#predictiveTotalCost").text(result.totalCost);
+      employees = Number((document.getElementById('employeesUpdate').value));
+      capital = Number((document.getElementById('capitalUpdate').value));
+      marginalEmployees = employees + 1;
+      marginalCapital = capital + 1;
 
+      cost = player.predictiveCost(employees, capital);
+      income = player.predictIncome(employees, capital);
+      marginalCost = player.predictiveCost(marginalEmployees, marginalCapital);
+      marginalIncome = player.predictIncome(marginalEmployees, marginalCapital)
 
+      $("#laborCost").text(cost.laborCost);
+      $("#capitalCost").text(cost.capitalCost);
+      $("#totalCost").text(cost.totalCost);
+      $("#priceOutput").text(income.price);
+      $("#quantityOutput").text(income.output);
+      $("#incomeOutput").text(income.totalIncome);
+      $("#profitGoods").text((income.totalIncome)-(cost.totalCost));
+
+      if(((income.totalIncome)-(cost.totalCost))>((marginalIncome.totalIncome)-(marginalCost.totalCost))){
+        console.log("Produce Less")
+      } else{
+        console.log("Produce More")
+      }
 
   });
 
@@ -276,7 +308,10 @@ start_game();
 
 Tick = function(){
 
-
+  for(var key in Market.list){
+    Market.list[key].newEntrants();
+    Market.list[key].resetDay(); //Ends the day
+  }
   produceGoods();
   demandOfFactors();
 
@@ -311,10 +346,7 @@ player.produce();
 
 */
 
-  for(var key in Market.list){
-    Market.list[key].newEntrants();
-    Market.list[key].resetDay(); //Ends the day
-  }
+
   
 
   game.tickCount++;
