@@ -1,5 +1,5 @@
 markets = ["Primary", "Secondary", "Service"]
-countries = ["France", "United Kingdom", "Tajikstan"]
+countries = ["France", "United Kingdom"]
 
 
 
@@ -36,14 +36,77 @@ countries = ["France", "United Kingdom", "Tajikstan"]
       function Player(name, sector, capital, employees, type, id, efficiency, country){
         var self = Business(name, sector, capital, employees, type, id, efficiency, country);
          self.stock=0;
+
          
+        self.produceOutput = function(employees, capital){
+          for(key in Country.list){
+              if(self.country==Country.list[key].country){
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="labor"){  
+                    Country.list[key][key2].demand = Country.list[key][key2].demand + employees; //store it in a variable so we can manipulate it
+                    Country.list[key][key2].price = Country.list[key][key2].demand/Country.list[key][key2].supply
+                    costOfLabor = employees * Country.list[key][key2].price
+                  }
+                  if(Country.list[key][key2].name=="capital"){
+                    Country.list[key][key2].demand = Country.list[key][key2].demand + capital; //store it in a variable so we can manipulate it
+                    Country.list[key][key2].price = Country.list[key][key2].demand/Country.list[key][key2].supply
+                    costOfCapital = capital * Country.list[key][key2].price
+                    break;
+                  }
+
+
+                  
+                }
+                player.cash -= (costOfLabor + costOfCapital);
+
+              }
+            }
+          for(var key in Market.list){
+                if(self.country==Market.list[key].country){
+                  if(self.sector==Market.list[key].sector){
+                    capacity = 100;
+                    if(self.upgrades=="Start-up"){
+                      capacity = 1000;
+                    } else if (self.upgrades=="Medium Firm"){
+                      capcity = 10000;
+                    } else if (self.upgrades=="Large Firm"){
+                      capacity = 100000;
+                    }
+                    output = employees*capital;
+
+                    spareCapacity = output/capacity;
+                    if(output>capacity){
+                    output = output / Math.exp(spareCapacity-1);}
+
+                    self.stock += output;
+
+                    updateCompanyDetailsUI();
+                  } 
+                } 
+            }
+        }
+        self.sellOutput = function(amount){
+            for(var key in Market.list){
+                  if(self.country==Market.list[key].country){
+                    if(self.sector==Market.list[key].sector){
+                      Market.list[key].supply += amount;
+
+                      Market.list[key].price = Market.list[key].demand/Market.list[key].supply;
+
+                      self.cash += Market.list[key].price * amount;
+                      self.stock -= amount;
+
+                      updateCompanyDetailsUI();
+                    } 
+                  } 
+            }
+        }
 
         self.predictiveCost = function(employees, capital){           
           for(key in Country.list){
               if(self.country==Country.list[key].country){
                 for(key2 in Country.list[key]){
                   if(Country.list[key][key2].name=="labor"){
-                    //priceOfLabor = Country.list[key][key2].price
                     
                     originalDemandLabor = Country.list[key][key2].demand; //store it in a variable so we can manipulate it
                     newDemandLabor = Country.list[key][key2].demand + employees; //add the employees onto the country market
@@ -52,7 +115,7 @@ countries = ["France", "United Kingdom", "Tajikstan"]
                   }
                   if(Country.list[key][key2].name=="capital"){
                     
-                    //priceOfCapital = Country.list[key][key2].price
+                   
                     originalDemandCapital = Country.list[key][key2].demand;
                     newDemandCapital = Country.list[key][key2].demand + capital;
                     originalSupplyCapital = Country.list[key][key2].supply;
@@ -82,7 +145,20 @@ countries = ["France", "United Kingdom", "Tajikstan"]
             for(var key in Market.list){
                   if(self.country==Market.list[key].country){
                     if(self.sector==Market.list[key].sector){
+                      capacity = 100;
+                      if(self.upgrades=="Start-up"){
+                        capacity = 1000;
+                      } else if (self.upgrades=="Medium Firm"){
+                        capcity = 10000;
+                      } else if (self.upgrades=="Large Firm"){
+                        capacity = 100000;
+                      }
                       output = employees*capital;
+
+                      spareCapacity = output/capacity;
+                      if(output>capacity){
+                      output = output / Math.exp(spareCapacity-1);}
+
                       originalSupplyMarket = Market.list[key].supply
                       originalDemandMarket = Market.list[key].demand
                       newSupplyMarket = Market.list[key].supply + output
@@ -97,7 +173,7 @@ countries = ["France", "United Kingdom", "Tajikstan"]
                     } 
                   } 
             }
-          }
+        }
 
         return self;
         }
