@@ -1,5 +1,6 @@
 function updateUI(){
 	updateSectorPrices();
+	updateCountryPrices();
 	updateCompanyDetailsUI();
 	updateGDP();
 	//Update Immigration/Capital Changes
@@ -20,7 +21,7 @@ function updateSectorPrices(){
 
 	  for (var i = 0; i < UniqueCounties.length; i++) {
 	    simple = UniqueCounties[i].replace(/\s+/, "") 
-	  	$("#"+simple+"").remove();
+	  	$("#"+simple+"_table").remove();
 	     
 	    $("#dynamicTable").append("<div class='tab-pane' id="+simple+">")
 
@@ -48,6 +49,38 @@ function updateSectorPrices(){
 	    }
 	    $("#dynamicTable").last().addClass("active")
 	}
+}
+
+function updateCountryPrices(){
+		  for(key in Country.list){
+		  	if (Country.list.hasOwnProperty(key)) {
+		    simple = Country.list[key].country.replace(/\s+/, "")
+		    $("#"+simple+"_tableMacro").remove();
+
+		   
+		    var table = $('<table style="width:50%"></table>').attr('id', simple+'_tableMacro');
+		    $("#"+simple+"_macro").append(table);
+		    var country = Country.list[key]
+		    for(key2 in country){
+		    	if(typeof(country[key2]) === 'object'){
+
+		        var type = $('<tr></tr>').attr('id', country[key2].name+'_table');
+
+		        var name = $('<td></td>').text(country[key2].name);
+		        var demand = $('<td></td>').text(country[key2].demand);
+		        var supply = $('<td></td>').text(country[key2].supply);
+		        var price = $('<td></td>').text(country[key2].price);
+
+		        table.append(type);
+		        type.append(name);
+		        type.append(demand);
+		        type.append(supply);
+		        type.append(price);
+		        } else{};
+		    }
+		}
+		  }
+
 }
 
 function updateCompanyDetailsUI(){

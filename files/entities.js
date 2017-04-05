@@ -1,7 +1,7 @@
 markets = ["Primary", "Secondary", "Service"]
 countries = ["France", "United Kingdom"]
 
-
+LaborPrices = {};
 
       function Competitor(name, sector, capital, employees, type, id, efficiency, country) {
            var self = Business(name, sector, capital, employees, type, id, efficiency, country);
@@ -23,11 +23,15 @@ countries = ["France", "United Kingdom"]
               }
               self.cash += self.cashFlow;
               self.networth += self.cashFlow;
-              if(self.cash<-2){
+              /*  if(self.cash<-2){
                 for(key in Competitor.list){
-                  delete Competitor.list[id];
+                  if(self.id = Competitor.list[id]){
+                    delete Competitor.list[id];
+                    break;
+                  }
+                
                 }
-              }
+              }*/
             }
             Competitor.list[id] = self; 
             return self;
@@ -234,6 +238,7 @@ countries = ["France", "United Kingdom"]
               }
 
               self.exchange = function(){
+                self.sector
                 for(var key in Market.list){
                   if(self.country==Market.list[key].country){
                     if(self.sector==Market.list[key].sector){
@@ -242,15 +247,15 @@ countries = ["France", "United Kingdom"]
                     if(self.sector=="Primary" && Market.list[key].sector=="Secondary"){
                       self.generateProduceExpense(key);
                       self.generateExpenseFactor(); //Buy the produce, need to get taxed 
-                      break;
+                      
                     } else if(self.sector=="Secondary" && Market.list[key].sector=="Service"){
                       self.generateProduceExpense(key);
                       self.generateExpenseFactor();
-                      break;
+                      
                     } else if (self.sector=="Service" && Market.list[key].sector=="Primary"){
                       self.generateProduceExpense(key);
                       self.generateExpenseFactor();
-                      break;
+                     
                       } 
                     }
                   }
@@ -259,6 +264,8 @@ countries = ["France", "United Kingdom"]
 
 
               self.generateIncome = function(key){  //Business
+                self.sector
+                console.log(Market.list[key].price);
                 self.income = (Market.list[key].price * (self.capital*self.employees))*self.efficiency;  
               }
 
@@ -399,6 +406,33 @@ countries = ["France", "United Kingdom"]
             }
             
           }
+          self.resetDemand = function(key){
+            for(key2 in Country.list[key]){
+              Country.list[key][key2].demand = 0;
+            }
+          }
+
+          self.immigrate = function(key){
+        
+            for(key2 in Country.list[key]){
+              
+              if(Country.list[key][key2].name=="labor"){
+                
+
+                LaborPrices[Country.list[key].country] = Country.list[key][key2].price;
+                for(key3 in LaborPrices){
+                  original = LaborPrices[key3]
+                  console.log(key3)
+                  difference = Country.list[key][key2].price-LaborPrices[key3]
+
+                  value = difference/original
+
+                  console.log((value)*100)
+                }
+              }
+              
+            }
+          } 
 
           Country.list[country] = self;
 
@@ -450,9 +484,12 @@ countries = ["France", "United Kingdom"]
           }
 
           self.newEntrants = function(){
-            if(game.tickCount%4 === 0){
-              if(self.demand>self.supply)
-                Competitor.generate(5);
+            if(game.tickCount%2 === 0){
+              if(self.demand>self.supply){
+                Competitor.generate(5, self.country, self.sector);
+                self.sector
+                self.country
+              }
             }
           }
           self.resetDay = function(){
@@ -508,7 +545,7 @@ countries = ["France", "United Kingdom"]
       };
 
 
-      Competitor.generate = function(amount){ //The parameter will dictate how many competitors to produce and also encourage new entrants into the market
+      Competitor.generate = function(amount, countryChoice, sectorChoice){ //The parameter will dictate how many competitors to produce and also encourage new entrants into the market
         for (var i = 0; i < amount; i++) { //Simple for loop which generates a competitor
           capitalAmount = Math.random() //Proportion of Capital of this Business
           employeeAmount = 1 - capitalAmount //Proportion of Employees of this Business 
@@ -518,113 +555,123 @@ countries = ["France", "United Kingdom"]
 
 
           var data = [
-          {"Company": "Nullam Ut Nisi PC"},
-          {"Company": "Cursus Vestibulum Mauris Corp."},
-          {"Company": "Cursus Vestibulum Limited"},
-          {"Company": "Velit Sed LLP"},
-          {"Company": "Sem Ut Dolor Institute"},
-          {"Company": "Donec Associates"},
-          {"Company": "Aenean Gravida Institute"},
-          {"Company": "Per Incorporated"},
-          {"Company": "Suspendisse Eleifend Inc."},
-          {"Company": "Turpis Non Enim LLC"},
-          {"Company": "Suspendisse Eleifend Cras Ltd"},
-          {"Company": "Imperdiet Company"},
-          {"Company": "Non Sapien Molestie LLP"},
-          {"Company": "Dui Semper LLC"},
-          {"Company": "Quisque Associates"},
-          {"Company": "In Lorem Donec Foundation"},
-          {"Company": "Ultricies Dignissim Lacus LLC"},
-          {"Company": "Duis PC"},
-          {"Company": "Dolor Fusce Corporation"},
-          {"Company": "Sem Molestie Industries"},
-          {"Company": "Dolor Vitae Dolor Company"},
-          {"Company": "Cum Sociis Natoque LLC"},
-          {"Company": "Erat Vivamus Associates"},
-          {"Company": "Volutpat Industries"},
-          {"Company": "Ac LLC"},
-          {"Company": "Dapibus Institute"},
-          {"Company": "Sapien Inc."},
-          {"Company": "Lectus Convallis Est Institute"},
-          {"Company": "Et Magnis Dis Industries"},
-          {"Company": "Phasellus Vitae Industries"},
-          {"Company": "Quis Pede Suspendisse Company"},
-          {"Company": "Mi LLP"},
-          {"Company": "Non Sollicitudin A Institute"},
-          {"Company": "Nostra LLC"},
-          {"Company": "Quisque Associates"},
-          {"Company": "Ipsum Suspendisse Sagittis Institute"},
-          {"Company": "Dolor Corporation"},
-          {"Company": "Ipsum Suspendisse Company"},
-          {"Company": "Blandit Enim Corp."},
-          {"Company": "A Neque Nullam Limited"},
-          {"Company": "At Nisi Cum Institute"},
-          {"Company": "In Ltd"},
-          {"Company": "Aliquet LLP"},
-          {"Company": "Lorem Inc."},
-          {"Company": "Magna Limited"},
-          {"Company": "Rutrum Non Hendrerit Incorporated"},
-          {"Company": "Dolor Inc."},
-          {"Company": "Odio Semper Cursus PC"},
-          {"Company": "Ac Institute"},
-          {"Company": "Quisque Porttitor Eros PC"},
-          {"Company": "Scelerisque Sed Sapien Inc."},
-          {"Company": "Tortor At Risus Corp."},
-          {"Company": "Lobortis LLP"},
-          {"Company": "Elit Corporation"},
-          {"Company": "Magna Nec Quam Corp."},
-          {"Company": "Eleifend Nunc Risus Consulting"},
-          {"Company": "Nec Institute"},
-          {"Company": "Nulla Eu Limited"},
-          {"Company": "Cum Ltd"},
-          {"Company": "In Company"},
-          {"Company": "Nunc Company"},
-          {"Company": "In Faucibus Inc."},
-          {"Company": "Nascetur Foundation"},
-          {"Company": "Lorem Ltd"},
-          {"Company": "Faucibus Orci Luctus Inc."},
-          {"Company": "Facilisis Eget Ltd"},
-          {"Company": "Conubia Industries"},
-          {"Company": "Commodo Corporation"},
-          {"Company": "Interdum Libero Dui PC"},
-          {"Company": "Ac Metus Ltd"},
-          {"Company": "Duis Corporation"},
-          {"Company": "Nunc In Associates"},
-          {"Company": "Suspendisse Aliquet Molestie Incorporated"},
-          {"Company": "Accumsan Convallis Consulting"},
-          {"Company": "Dis Parturient Corp."},
-          {"Company": "Placerat Orci Lacus LLP"},
-          {"Company": "Amet Corp."},
-          {"Company": "Posuere Associates"},
-          {"Company": "Ipsum Cursus Limited"},
-          {"Company": "Lacinia LLP"},
-          {"Company": "Condimentum Donec Industries"},
-          {"Company": "Proin Nisl Sem Industries"},
-          {"Company": "Nec Euismod In PC"},
-          {"Company": "Duis Sit LLP"},
-          {"Company": "Auctor Foundation"},
-          {"Company": "Aliquam Arcu Aliquam Company"},
-          {"Company": "Ridiculus Mus Proin Incorporated"},
-          {"Company": "Egestas LLP"},
-          {"Company": "Vivamus Rhoncus Institute"},
-          {"Company": "Donec Tempor Est Ltd"},
-          {"Company": "Adipiscing Ltd"},
-          {"Company": "Orci Lobortis PC"},
-          {"Company": "Integer Ltd"},
-          {"Company": "Nisi Sem Semper LLP"},
-          {"Company": "Lorem Associates"},
-          {"Company": "Duis Ac Arcu Industries"},
-          {"Company": "Magna A Incorporated"},
-          {"Company": "Non Nisi Aenean PC"},
-          {"Company": "Mollis Dui In PC"},
-          {"Company": "Etiam Bibendum Corp."}
-        ];
+            {"Company": "Nullam Ut Nisi PC"},
+            {"Company": "Cursus Vestibulum Mauris Corp."},
+            {"Company": "Cursus Vestibulum Limited"},
+            {"Company": "Velit Sed LLP"},
+            {"Company": "Sem Ut Dolor Institute"},
+            {"Company": "Donec Associates"},
+            {"Company": "Aenean Gravida Institute"},
+            {"Company": "Per Incorporated"},
+            {"Company": "Suspendisse Eleifend Inc."},
+            {"Company": "Turpis Non Enim LLC"},
+            {"Company": "Suspendisse Eleifend Cras Ltd"},
+            {"Company": "Imperdiet Company"},
+            {"Company": "Non Sapien Molestie LLP"},
+            {"Company": "Dui Semper LLC"},
+            {"Company": "Quisque Associates"},
+            {"Company": "In Lorem Donec Foundation"},
+            {"Company": "Ultricies Dignissim Lacus LLC"},
+            {"Company": "Duis PC"},
+            {"Company": "Dolor Fusce Corporation"},
+            {"Company": "Sem Molestie Industries"},
+            {"Company": "Dolor Vitae Dolor Company"},
+            {"Company": "Cum Sociis Natoque LLC"},
+            {"Company": "Erat Vivamus Associates"},
+            {"Company": "Volutpat Industries"},
+            {"Company": "Ac LLC"},
+            {"Company": "Dapibus Institute"},
+            {"Company": "Sapien Inc."},
+            {"Company": "Lectus Convallis Est Institute"},
+            {"Company": "Et Magnis Dis Industries"},
+            {"Company": "Phasellus Vitae Industries"},
+            {"Company": "Quis Pede Suspendisse Company"},
+            {"Company": "Mi LLP"},
+            {"Company": "Non Sollicitudin A Institute"},
+            {"Company": "Nostra LLC"},
+            {"Company": "Quisque Associates"},
+            {"Company": "Ipsum Suspendisse Sagittis Institute"},
+            {"Company": "Dolor Corporation"},
+            {"Company": "Ipsum Suspendisse Company"},
+            {"Company": "Blandit Enim Corp."},
+            {"Company": "A Neque Nullam Limited"},
+            {"Company": "At Nisi Cum Institute"},
+            {"Company": "In Ltd"},
+            {"Company": "Aliquet LLP"},
+            {"Company": "Lorem Inc."},
+            {"Company": "Magna Limited"},
+            {"Company": "Rutrum Non Hendrerit Incorporated"},
+            {"Company": "Dolor Inc."},
+            {"Company": "Odio Semper Cursus PC"},
+            {"Company": "Ac Institute"},
+            {"Company": "Quisque Porttitor Eros PC"},
+            {"Company": "Scelerisque Sed Sapien Inc."},
+            {"Company": "Tortor At Risus Corp."},
+            {"Company": "Lobortis LLP"},
+            {"Company": "Elit Corporation"},
+            {"Company": "Magna Nec Quam Corp."},
+            {"Company": "Eleifend Nunc Risus Consulting"},
+            {"Company": "Nec Institute"},
+            {"Company": "Nulla Eu Limited"},
+            {"Company": "Cum Ltd"},
+            {"Company": "In Company"},
+            {"Company": "Nunc Company"},
+            {"Company": "In Faucibus Inc."},
+            {"Company": "Nascetur Foundation"},
+            {"Company": "Lorem Ltd"},
+            {"Company": "Faucibus Orci Luctus Inc."},
+            {"Company": "Facilisis Eget Ltd"},
+            {"Company": "Conubia Industries"},
+            {"Company": "Commodo Corporation"},
+            {"Company": "Interdum Libero Dui PC"},
+            {"Company": "Ac Metus Ltd"},
+            {"Company": "Duis Corporation"},
+            {"Company": "Nunc In Associates"},
+            {"Company": "Suspendisse Aliquet Molestie Incorporated"},
+            {"Company": "Accumsan Convallis Consulting"},
+            {"Company": "Dis Parturient Corp."},
+            {"Company": "Placerat Orci Lacus LLP"},
+            {"Company": "Amet Corp."},
+            {"Company": "Posuere Associates"},
+            {"Company": "Ipsum Cursus Limited"},
+            {"Company": "Lacinia LLP"},
+            {"Company": "Condimentum Donec Industries"},
+            {"Company": "Proin Nisl Sem Industries"},
+            {"Company": "Nec Euismod In PC"},
+            {"Company": "Duis Sit LLP"},
+            {"Company": "Auctor Foundation"},
+            {"Company": "Aliquam Arcu Aliquam Company"},
+            {"Company": "Ridiculus Mus Proin Incorporated"},
+            {"Company": "Egestas LLP"},
+            {"Company": "Vivamus Rhoncus Institute"},
+            {"Company": "Donec Tempor Est Ltd"},
+            {"Company": "Adipiscing Ltd"},
+            {"Company": "Orci Lobortis PC"},
+            {"Company": "Integer Ltd"},
+            {"Company": "Nisi Sem Semper LLP"},
+            {"Company": "Lorem Associates"},
+            {"Company": "Duis Ac Arcu Industries"},
+            {"Company": "Magna A Incorporated"},
+            {"Company": "Non Nisi Aenean PC"},
+            {"Company": "Mollis Dui In PC"},
+            {"Company": "Etiam Bibendum Corp."}
+          ];
 
+          if(countryChoice == "random"){
+          var country = countries[Math.floor(Math.random() * countries.length)];
+          } else{
+          var country = countryChoice;
+          }
+          if(sectorChoice == "random"){
+          var sector = markets[Math.floor(Math.random() * markets.length)]; //http://stackoverflow.com/questions/5915096/get-random-item-from-javascript-array
+                     //http://stackoverflow.com/questions/5915096/get-random-item-from-javascript-array
+          } else{
+          var sector = sectorChoice;
+          }
           var name = data[Math.floor(Math.random()*100)].Company; 
           var capital = capitalAmount*18;
           var employees = employeeAmount*10;
-          var sector = markets[Math.floor(Math.random() * markets.length)]; //http://stackoverflow.com/questions/5915096/get-random-item-from-javascript-array
-          var country = countries[Math.floor(Math.random() * countries.length)]; //http://stackoverflow.com/questions/5915096/get-random-item-from-javascript-array
+          
           var id = Math.random();
           var efficiency = Math.random()*10;
 

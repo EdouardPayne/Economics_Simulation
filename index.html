@@ -64,7 +64,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#companyPage">Company Information</a></li>
                 <li><a data-toggle="tab" href="#marketPage">Market Information</a></li>
-                <li><a data-toggle="tab" href="#countryPage">Country Information</a></li>
+                <li><a data-toggle="tab" href="#countriesPage">Country Information</a></li>
                 <li><a data-toggle="tab" href="#MacroPage">Economics Shocks</a></li>
                 <li><a data-toggle="tab" href="#productionPage">Produce Output</a></li>
                 <li><a data-toggle="tab" href="#upgradePage">Upgrade Business</a></li>
@@ -97,7 +97,7 @@
 
 
               <h2>Market Details</h2>            
-              <ul class="nav nav-tabs" id="countryInfo">
+              <ul class="nav nav-tabs" id="marketInfo">
 
               </ul>
               <div class="tab-content" id="dynamicTable">
@@ -106,7 +106,16 @@
 
               </div>
             </div>
-            <div class="country tab-pane fade" id="countryPage">
+            <div class="country tab-pane fade" id="countriesPage">
+              <h2>Countries Information</h2>
+              <ul class="nav nav-tabs" id="countryInfo">
+
+              </ul>
+              <div class="tab-content" id="dynamicTableCountry">
+
+
+
+              </div>
             </div>
 
             <div class="macro tab-pane fade" id="MacroPage">
@@ -194,12 +203,34 @@ modifyDOM = function(){
   var UniqueCounties = CountryDOM.filter(function(elem, pos) {
     return CountryDOM.indexOf(elem) == pos;  //http://mikeheavers.com/tutorials/removing_duplicates_in_an_array_using_javascript/
   });
-    
+  for(key in Country.list){
+    simple = Country.list[key].country.replace(/\s+/, "")
+    $( "#countryInfo" ).append("<li><a data-toggle='tab' href=#"+simple+"_macro>"+Country.list[key].country+"</a></li>")
+
+    $("#dynamicTableCountry").append("<div class='tab-pane' id="+simple+"_macro>")
+    var table = $('<table style="width:50%"></table>').attr('id', simple+'_tableMacro');
+    $("#"+simple+"_macro").append(table);
+    var country = Country.list[key]
+    for(key2 in country){
+        var type = $('<tr></tr>').attr('id', country[key2].name+'_table');
+
+        var name = $('<td></td>').text(country[key2].name);
+        var demand = $('<td></td>').text(country[key2].demand);
+        var supply = $('<td></td>').text(country[key2].supply);
+        var price = $('<td></td>').text(country[key2].price);
+
+        table.append(type);
+        type.append(name);
+        type.append(demand);
+        type.append(supply);
+        type.append(price);
+    }
+  }
 
 
   for (var i = 0; i < UniqueCounties.length; i++) {
     simple = UniqueCounties[i].replace(/\s+/, "") 
-    $( "#countryInfo" ).append("<li><a data-toggle='tab' href=#"+simple+">"+UniqueCounties[i]+"</a></li>")
+    $( "#marketInfo" ).append("<li><a data-toggle='tab' href=#"+simple+">"+UniqueCounties[i]+"</a></li>")
      
     $("#dynamicTable").append("<div class='tab-pane' id="+simple+">")
 
@@ -379,21 +410,52 @@ function checkCashFlow(){
    // Business.list[key2].generateExpenseFactor();
     Competitor.list[key2].checkCashFlow(); 
   }
-
-
 }
 
+function addBusinesses(){
+  for(key in Market.list){
+    Market.list[key].newEntrants();
+  }
+}
 
+function immigration(){
+  for(key in Country.list){
+    Country.list[key].immigrate(key);
+  }
+}
+
+function resetDemandCountry(){
+  for(var key in Country.list){
+    Country.list[key].resetDemand(key);
+  }
+}
+function resetDemandMarket(){
+  for(key in Market.list){
+    Market.list[key].resetDay(); 
+  }
+}
+
+function resetDemand(){
+  resetDemandMarket();
+  resetDemandCountry();
+  LaborPrices = {};
+}
+
+function upgrade(){
+    for(var key3 in Competitor.list){
+   // Business.list[key2].generateExpenseFactor();
+    Competitor.list[key3].upgrade() 
+  }
+}
 
 start_game();
 
 Tick = function(){
 
-  for(var key in Market.list){
-    Market.list[key].newEntrants();
-    Market.list[key].resetDay(); //Ends the day
-  }
+  resetDemand();
+
   produceGoods();
+  
   demandOfFactors();
 
   cyclicalDemand();
@@ -406,17 +468,14 @@ Tick = function(){
 
   checkCashFlow();
 
-  //Immigration();
+  immigration();
 
   //InvestmentCapital();
 
-  
-  for(var key3 in Competitor.list){
-   // Business.list[key2].generateExpenseFactor();
-    Competitor.list[key3].upgrade() 
-  } 
+  upgrade();
+ 
   player.upgrade();
-player.produce(); 
+  player.produce(); 
   updateUI();
 
 
@@ -429,7 +488,7 @@ player.produce();
 
 
   
-  
+  addBusinesses()
   game.tickCount++;
   
 }
@@ -437,7 +496,7 @@ player.produce();
 generateMarket();
 generateCountry();
             
-Competitor.generate(20); //Generate competitor
+Competitor.generate(20, "random", "random"); //Generate competitor
 
 
 modifyDOM();
