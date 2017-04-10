@@ -8,10 +8,14 @@
         <script src="files/amcharts/pie.js"></script>
         <script src="files/entities.js"></script>
         <script src="files/updateUI.js"></script>
+        <link rel="stylesheet" type="text/css" href="files/custom.css">
         <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
         <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
         <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
+        <link rel="stylesheet" href="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.css">
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
         <!-- Optional theme -->
@@ -55,126 +59,157 @@
                     
                   </form>
                   <button id="businessSubmit" class="btn btn-default" class="form-control">Submit Business Details</button>
-                  <br>
-                  
+                  <br>           
           </div>
-
-          <div class="overview tab-content">
-            <button onclick="Tick()" id="nextday">Next Day</button>
-            <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#companyPage">Company Information</a></li>
-                <li><a data-toggle="tab" href="#marketPage">Market Information</a></li>
-                <li><a data-toggle="tab" href="#countriesPage">Country Information</a></li>
-                <li><a data-toggle="tab" href="#MacroPage">Economics Shocks</a></li>
-                <li><a data-toggle="tab" href="#productionPage">Produce Output</a></li>
-                <li><a data-toggle="tab" href="#upgradePage">Upgrade Business</a></li>
-                <li><a data-toggle="tab" href="#diagramPage">Statistics</a></li>
-            </ul>
-
-
-            <div class="companyDetails tab-pane fade in active" id="companyPage">
-              <h2>Company Details</h2>
-              <table style="width:100%">
-                <tr>
-                  <th>Company Name</th>
-                  <th>Number of Employees</th>
-                  <th>Number of Capital</th> 
-                  <th>Stock</th> 
-                  <th>Cash</th>
-                </tr>
-                <tr>
-                  <td id="companyName"></td>
-                  <td id="numberEmployees"></td>
-                  <td id="numberCapital"></td>  
-                  <td id="stockLevels"></td>
-                  <td id="cash"></td> 
-                </tr>
-              </table>
-            </div>
-
-            <div class="marketDetails tab-pane fade"  id="marketPage">
+          <div class="row overview">
 
 
 
-              <h2>Market Details</h2>            
-              <ul class="nav nav-tabs" id="marketInfo">
-
-              </ul>
-              <div class="tab-content" id="dynamicTable">
-
-
-
-              </div>
-            </div>
-            <div class="country tab-pane fade" id="countriesPage">
-              <h2>Countries Information</h2>
-              <ul class="nav nav-tabs" id="countryInfo">
-
-              </ul>
-              <div class="tab-content" id="dynamicTableCountry">
-
-
-
-              </div>
-            </div>
-
-            <div class="macro tab-pane fade" id="MacroPage">
-            </div>
-            
-            <div class="manageProduction tab-pane fade" id="productionPage">
-              <h2>Manage Production</h2>
-                <div class="row">
-                  <div class="updateProductionDetails col-md-9">
-                  <h3>Update Production Details</h3>
-                  <form>
-                    <input input type="number" id="capitalUpdate" placeholder="Update Capital Amount"></input>
-                    <input input type="number" id="employeesUpdate" placeholder="Update Employee Amount"></input>
-                    <button type='button' id="productionCreate">Update Business Details</button>
-                  </form>
-                  <h4>Estimated Cost</h4>
-                  
-                  <p>Capital Cost:</p> <span id="capitalCost"></span>
-                  <p>Labor Cost:</p><span id="laborCost"></span>
-                  <p>Total Cost:</p><span id="totalCost"></span>
-
-                  <h4>Estimated Income</h4>
-                  
-                  <p>Price of Output:</p> <span id="priceOutput"></span>
-                  <p>Quantity:</p><span id="quantityOutput"></span>
-                  <p>Income:</p><span id="incomeOutput"></span>
-
-                  <h4>Profit</h4>
-                  
-                  <p>Profit</p> <span id="profitGoods"></span>
-                  </div>
+            <div class="col-md-12">
+              
                 
-                  <div class="sellOutput col-md-3">
-                    <h3>Sell Output</h3>
-                    <form>
-                      <input input type="number" id="sellAmount" placeholder="Select Amount you want to sell"></input>
-                      <button type='button' id="sellOutput">Sell Ouput</button>
-                    </form>
-                  </div>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#companyPage">Company Information</a></li>
+                    <li><a data-toggle="tab" href="#marketPage">Market Information</a></li>
+                    <li><a data-toggle="tab" href="#countriesPage">Country Information</a></li>
+                    <li><a data-toggle="tab" href="#MacroPage">Economics Shocks</a></li>
+                    <li><a data-toggle="tab" href="#productionPage">Produce Output</a></li>
+                    <li><a data-toggle="tab" href="#upgradePage">Upgrade Business</a></li>
+                    <li><a data-toggle="tab" href="#diagramPage">Statistics</a></li>
+                </ul>
+              </div>
+              <div class="row">
+                <div class="col-md-2">
+                  <h2>
+          
+                    <button onclick="Tick()" id="nextday"  class="btn btn-primary"  data-toggle="tooltip" title="In order to proceed to next day go to 'Produce Output' tab and produce output and sell it">Simulate Next Day</button>
+       
+                  </h2>
                 </div>
+                <div class="col-md-10">
+                  <div class="tab-content">
+                    <div class="companyDetails tab-pane fade in active" id="companyPage">
+                      <h2>Company Details</h2>
+                      <table style="width:100%">
+                        <tr>
+                          <th>Company Name</th>
+                          <th>Number of Employees</th>
+                          <th>Number of Capital</th> 
+                          <th>Stock</th> 
+                          <th>Cash</th>
+                        </tr>
+                        <tr>
+                          <td id="companyName"></td>
+                          <td id="numberEmployees"></td>
+                          <td id="numberCapital"></td>  
+                          <td id="stockLevels"></td>
+                          <td id="cash"></td> 
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div class="marketDetails tab-pane fade"  id="marketPage">
+
+
+
+                      <h2>Market Details</h2>            
+                      <ul class="nav nav-tabs" id="marketInfo">
+
+                      </ul>
+                      <div class="tab-content" id="dynamicTable">
+
+
+
+                      </div>
+                    </div>
+                    <div class="country tab-pane fade" id="countriesPage">
+                      <h2>Countries Information</h2>
+                      <ul class="nav nav-tabs" id="countryInfo">
+
+                      </ul>
+                      <div class="tab-content" id="dynamicTableCountry">
+
+
+
+                      </div>
+                    </div>
+
+                    <div class="macro tab-pane fade" id="MacroPage">
+                      <h2>Latest Economic Information</h2>
+                      <pre id="economic_info">
+
+                      </pre>
+                    </div>
+                    
+                    <div class="manageProduction tab-pane fade" id="productionPage">
+                      <h2>Manage Production</h2>
+                        <div class="row">
+                          <div class="updateProductionDetails col-md-9">
+                            <h3>Update Production Details</h3>
+
+                            <form>
+                              <input input type="number" id="capitalUpdate" placeholder="Update Capital Amount"></input>
+                              <input input type="number" id="employeesUpdate" placeholder="Update Employee Amount"></input>
+                              <button type='button' id="productionCreate">Produce Output</button>
+                            </form>
+                              <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Estimated Cost:</h4>
+                                    
+                                    <p>Capital Cost:</p> <span id="capitalCost"></span>
+                                    <p>Labor Cost:</p><span id="laborCost"></span>
+                                    <p>Land Cost</p><span id="landCost"></span>
+                                    <p>Total Cost:</p><span id="totalCost"></span>
+
+                                    <h4>Estimated Income</h4>
+                                    
+                                    <p>Price of Output:</p> <span id="priceOutput"></span>
+                                    <p>Quantity:</p><span id="quantityOutput"></span>
+                                    <p>Income:</p><span id="incomeOutput"></span>
+
+                                    <h4>Profit</h4>
+                                    
+                                    <p>Profit</p> <span id="profitGoods"></span>
+                                </div>
+                                <div class="col-md-6">
+                                  <h4>Business Advisor:</h4>
+                                  <p id="businessAdvice"></p>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="sellOutput col-md-3">
+                            <h3>Sell Output</h3>
+                            <form>
+                              <input input type="number" id="sellAmount" placeholder="Select Amount you want to sell"></input>
+                              <button type='button' id="sellOutput">Sell Ouput</button>
+                            </form>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="upgradeBusiness tab-pane fade" id="upgradePage">
+                      <h3> You Can Upgrade your business here </h3>
+
+                      <button type="button" id="startUp" disabled>Start-up</button>
+                      <button type="button" id="mediumFirm" disabled>Medium Firm</button>
+                    </div>
+
+                    <div class="diagrams tab-pane fade" id="diagramPage">
+                      <div id="marketShare" style="width: 640px; height: 400px;"></div>
+                      <div id="priceLabor" style="width: 640px; height: 400px;"></div>
+                      <div id="priceCapital" style="width: 640px; height: 400px;"></div>
+                      <div id="GDPLevel" style="width: 640px; height: 400px;"></div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              </div>  
             </div>
-            <div class="upgradeBusiness tab-pane fade" id="upgradePage">
-              <h3> You Can Upgrade your business here </h3>
+         
 
-              <button type="button" id="startUp" disabled>Start-up</button>
-              <button type="button" id="mediumFirm" disabled>Medium Firm</button>
-            </div>
-
-            <div class="diagrams tab-pane fade" id="diagramPage">
-              <div id="marketShare" style="width: 640px; height: 400px;"></div>
-              <div id="priceLabor" style="width: 640px; height: 400px;"></div>
-              <div id="priceCapital" style="width: 640px; height: 400px;"></div>
-              <div id="GDPLevel" style="width: 640px; height: 400px;"></div>
-            </div>
-
-            
-
-          </div>  
-    </div>
+    
   </body>
 
 
@@ -265,6 +300,40 @@ modifyDOM = function(){
   }
 }
 
+$('#nextday[title]').qtip()
+
+
+  $('#updateProductionDetails form, input').keyup(function(event){
+      employees = 0; 
+      capital = 0;
+      employees = Number((document.getElementById('employeesUpdate').value));
+      capital = Number((document.getElementById('capitalUpdate').value));
+      marginalEmployees = employees + 1;
+      marginalCapital = capital + 1;
+
+      cost = player.predictiveCost(employees, capital);
+      income = player.predictIncome(employees, capital);
+      marginalCost = player.predictiveCost(marginalEmployees, marginalCapital);
+      marginalIncome = player.predictIncome(marginalEmployees, marginalCapital)
+
+      $("#laborCost").text(cost.laborCost);
+      $("#capitalCost").text(cost.capitalCost);
+      $("#landCost").text(cost.landCost);
+      $("#totalCost").text(cost.totalCost);
+      
+      $("#priceOutput").text(income.price);
+      $("#quantityOutput").text(income.output);
+      $("#incomeOutput").text(income.totalIncome);
+      $("#profitGoods").text((income.totalIncome)-(cost.totalCost));
+
+      if(((marginalIncome.totalIncome)-(income.totalIncome))>((marginalCost.totalCost)-(cost.totalCost))){ //this follows profit maximisation rule in economics whereby MR=MC. If MR>MC then the company should produce more output as they can make additional profit. If however, MR<MC the company should reduce output as additional output is making a loss.
+        $("#businessAdvice").text("Produce More, since MR>MC, you will be able to make more profit.");
+
+      } else{
+        $("#businessAdvice").text("Produce Less, since MR<MC you will be able to make more profit.");
+      }
+
+  });
 
     Market.list = {};
     Competitor.list = {};
@@ -288,7 +357,7 @@ start_game = function(){
     $( ".overview" ).show();
 
 
-    player = new Player("Ed", "Primary", 2, 2, 'player',2,10, "France");
+    player = new Player("Ed", "Primary", 2, 2, 20, 'player',2,10, "France");
 
     player.cash = 50;
 
@@ -299,9 +368,11 @@ start_game = function(){
     $("#foreCastedIncome").append(player.income-player.expenses);
     $("#cash").append(player.cash);
     //update the html in the second form to show the user's entered name  
-
+    Tick();
     });
 }
+
+
 
 updateProductionDetails = function(){
   $('#productionCreate').click(function(){
@@ -328,44 +399,32 @@ sellStock = function(){
     amount=Number(document.getElementById('sellAmount').value);
     if(amount<=player.stock){
       player.sellOutput(amount);
+      validateStock();
     }
     
   });
 }
+
+validateStock = function(){
+  if(game.tickCount == 1 && player.stock == 0){
+     $('#nextday').attr("disabled", true);
+  } else{
+    $('#nextday').attr("disabled", false);
+  }
+}
+
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
+
+
 updateProductionDetails();
 
 sellStock();
 
 
-  $('#updateProductionDetails form, input').keyup(function(event){
-      employees = 0; 
-      capital = 0;
-      employees = Number((document.getElementById('employeesUpdate').value));
-      capital = Number((document.getElementById('capitalUpdate').value));
-      marginalEmployees = employees + 1;
-      marginalCapital = capital + 1;
 
-      cost = player.predictiveCost(employees, capital);
-      income = player.predictIncome(employees, capital);
-      marginalCost = player.predictiveCost(marginalEmployees, marginalCapital);
-      marginalIncome = player.predictIncome(marginalEmployees, marginalCapital)
-
-      $("#laborCost").text(cost.laborCost);
-      $("#capitalCost").text(cost.capitalCost);
-      $("#totalCost").text(cost.totalCost);
-      
-      $("#priceOutput").text(income.price);
-      $("#quantityOutput").text(income.output);
-      $("#incomeOutput").text(income.totalIncome);
-      $("#profitGoods").text((income.totalIncome)-(cost.totalCost));
-
-      if(((marginalIncome.totalIncome)-(income.totalIncome))>((marginalCost.totalCost)-(cost.totalCost))){ //this follows profit maximisation rule in economics whereby MR=MC. If MR>MC then the company should produce more output as they can make additional profit. If however, MR<MC the company should reduce output as additional output is making a loss.
-        console.log("Produce More")
-      } else{
-        console.log("Produce Less")
-      }
-
-  });
 
 
 
@@ -448,10 +507,16 @@ function upgrade(){
   }
 }
 
+function shocks(){
+  for(var key in Country.list){
+    Country.list[key].countryShock(key);
+  }
+}
+
 start_game();
 
 Tick = function(){
-
+  
   resetDemand();
 
   produceGoods();
@@ -460,15 +525,18 @@ Tick = function(){
 
   cyclicalDemand();
 
-  //Shocks();
+  shocks();
+
+  
 
   generatePrice();
+
 
   exchangeGoods();
 
   checkCashFlow();
 
-  immigration();
+  
 
   //InvestmentCapital();
 
@@ -477,7 +545,7 @@ Tick = function(){
   player.upgrade();
   player.produce(); 
   updateUI();
-
+  immigration();
 
 /*
   updateChart();

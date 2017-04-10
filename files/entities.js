@@ -1,10 +1,10 @@
 markets = ["Primary", "Secondary", "Service"]
-countries = ["France", "United Kingdom"]
+countries = ["France", "United Kingdom", "Second"]
 
 LaborPrices = {};
 
-      function Competitor(name, sector, capital, employees, type, id, efficiency, country) {
-           var self = Business(name, sector, capital, employees, type, id, efficiency, country);
+      function Competitor(name, sector, capital, employees, land, type, id, efficiency, country) {
+           var self = Business(name, sector, capital, employees, land, type, id, efficiency, country);
 
             self.upgrade = function(){ //Competitor
               if(self.cash>5 && self.upgrades['Start-up']==false){
@@ -37,8 +37,8 @@ LaborPrices = {};
             return self;
         };
 
-      function Player(name, sector, capital, employees, type, id, efficiency, country){
-        var self = Business(name, sector, capital, employees, type, id, efficiency, country);
+      function Player(name, sector, capital, employees, land, type, id, efficiency, country){
+        var self = Business(name, sector, capital,  employees,land, type, id, efficiency, country);
          self.stock=0;
 
          
@@ -124,17 +124,24 @@ LaborPrices = {};
                     newDemandCapital = Country.list[key][key2].demand + capital;
                     originalSupplyCapital = Country.list[key][key2].supply;
                     priceOfCapital = newDemandCapital/originalSupplyCapital
-                    break;
+                 
+                  }
+                  if(Country.list[key][key2].name=="land"){
+                    
+                   
+                    priceOfLand = Country.list[key][key2].price
+                 
                   }
                 }
 
-
+                costOfLand = priceOfLand*self.land;
                 costOfLabor = priceOfLabor*employees; 
                 costOfCapital = priceOfCapital*capital; 
-                totalCost = costOfCapital + costOfLabor;
+                totalCost = costOfCapital + costOfLabor + costOfLand;
                 return {
                       "laborCost": costOfLabor,
                       "capitalCost": costOfCapital,
+                      "landCost": costOfLand,
                       "totalCost": totalCost,
                       "priceOfCapital": priceOfCapital,
                       "priceOfLabor": priceOfLabor
@@ -181,12 +188,13 @@ LaborPrices = {};
 
         return self;
         }
-      function Business(name, sector, capital, employees, type, id, efficiency, country) {
+      function Business(name, sector, capital, employees, land, type, id, efficiency, country) {
               var self = {
               name:name,  
               sector:sector,
               capital:capital,
               employees:employees,
+              land:land,
               type:type,
               id:id,
               efficiency: efficiency,
@@ -205,17 +213,19 @@ LaborPrices = {};
               self.demandOfFactors = function(){
               for(var key2 in Country.list){
                 if(self.country==Country.list[key2].country){
-                  console.log("Match");
-                  self.addDemandofFactors(key2)
+                  
+                  self.addDemandofFactors(key2);
                 }
               }
               }
               self.addDemandofFactors = function(key2){
                 for(key3 in Country.list[key2]){
                   if(Country.list[key2][key3].name=="labor"){
-                    Country.list[key2][key3].demand += self.employees
+                    Country.list[key2][key3].demand += self.employees;
                   } else if (Country.list[key2][key3].name=="capital"){
-                    Country.list[key2][key3].demand += self.capital
+                    Country.list[key2][key3].demand += self.capital;
+                  } else if(Country.list[key2][key3].name=="land"){
+                    Country.list[key2][key3].demand += self.land;
                   }
                 }
               }
@@ -223,10 +233,10 @@ LaborPrices = {};
                 for(var key in Market.list){
                   if(self.country==Market.list[key].country){
                     if(self.sector==Market.list[key].sector){
-                     self.generateSupply(key)
+                     self.generateSupply(key);
                     }  
                     if(self.sector=="Primary" && Market.list[key].sector=="Secondary"){
-                      self.generateDemand(key)
+                      self.generateDemand(key);
                     } else if (self.sector=="Secondary" && Market.list[key].sector=="Service"){
                       self.generateDemand(key);
                     } else if (self.sector=="Service" && Market.list[key].sector=="Primary"){
@@ -264,8 +274,6 @@ LaborPrices = {};
 
 
               self.generateIncome = function(key){  //Business
-                self.sector
-                console.log(Market.list[key].price);
                 self.income = (Market.list[key].price * (self.capital*self.employees))*self.efficiency;  
               }
 
@@ -285,14 +293,18 @@ LaborPrices = {};
                         }
                         if(Country.list[key][key2].name=="capital"){
                           priceOfCapital = Country.list[key][key2].price
+                        }
+                        if(Country.list[key][key2].name=="land"){
+                          priceOfLand = Country.list[key][key2].price
                           break;
                         }
                       }
 
                       CostOfLabor = priceOfLabor*self.employees 
                       CostOfCapital = priceOfCapital*self.capital 
+                      CostOfLand = priceOfLand*self.land
 
-                      self.expenses += (CostOfCapital + CostOfLabor)/self.efficiency;
+                      self.expenses += (CostOfCapital + CostOfLabor + CostOfLand)/self.efficiency;
                       break;
                     }
                   }
@@ -301,12 +313,12 @@ LaborPrices = {};
 
               self.generateSupply = function(key){ //Business
                 Market.list[key].supply  += (self.capital*self.employees); //Sell the goods onto the market
-                console.log("Generated supply " + Market.list[key].supply)
+                
               }
 
               self.generateDemand = function(key){ //Business
                 Market.list[key].demand +=(self.capital*self.employees);
-                console.log("Generated demand " + Market.list[key].demand)
+              
               }
 
               self.checkCashFlow = function(){ //Business
@@ -343,6 +355,7 @@ LaborPrices = {};
                   self.efficiency *= 5;
                   self.employees *= 10;
                   self.capital *= 10;
+                  self.land *= 10;
                   self.networth += 5;
               }
 
@@ -353,6 +366,7 @@ LaborPrices = {};
                   
                   self.employees *= 10;
                   self.capital *= 10;
+                  self.land *= 10;
                   self.networth += 500;
               }
                 
@@ -424,15 +438,171 @@ LaborPrices = {};
                   original = LaborPrices[key3]
                   console.log(key3)
                   difference = Country.list[key][key2].price-LaborPrices[key3]
-
+                  movement = Country.list[key][key2].supply
                   value = difference/original
 
-                  console.log((value)*100)
+                  Country.list[key3][key2].supply
+
+                  immigrants= value*Country.list[key3][key2].supply
+                  console.log(immigrants)
+                  if(immigrants>=Country.list[key3][key2].supply){
+                    immigrants=Country.list[key3][key2].supply-1
+                  }
+                  immigrants/=10;
+                  console.log(immigrants)
+                  Country.list[key3][key2].supply-=immigrants;
+                  Country.list[key3][key2].price = Country.list[key3][key2].demand/Country.list[key3][key2].supply;
+                  Country.list[key][key2].supply+=immigrants;
+                  Country.list[key][key2].price = Country.list[key][key2].demand/Country.list[key][key2].supply;
+                  console.log(value)
                 }
               }
               
-            }
-          } 
+              }
+           } 
+          self.countryShock = function(key){
+            
+            chance = Math.round(Math.random()*100)
+            result = Math.floor(Math.random()*4)
+
+            switch(chance){
+              case 1: //population Boom
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="labor"){
+                    Country.list[key][key2].supply += 50;
+                  }
+                }
+                switch(result){
+                  case 1:
+                   $( "#economic_info" ).prepend( "<p>Increase in labor supply for "+ Country.list[key].country + ". Following on from an increase in government subsidies to babies - more children born.</p>" );
+                  break;
+                  case 2:
+                    $( "#economic_info" ).prepend( "<p>Increase in labor supply for "+ Country.list[key].country + ". Following on from a development in medicine - people live longer.</p>" );
+                  break;
+                  case 3:
+                    $( "#economic_info" ).prepend( "<p>Increase in labor supply for "+ Country.list[key].country + ". Following on from a increase in retirement age - people work longer.</p>" );
+                  break;
+                  case 4:
+                   $( "#economic_info" ).prepend( "<p>Increase in labor supply for "+ Country.list[key].country + ". Following on from a great harvest - more children born.</p>" );
+                  break;
+                }
+              break;
+
+              case 2: //populaton Decrease
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="labor"){
+                    Country.list[key][key2].supply -= 50;
+                  }
+                }
+                switch(result){
+                  case 1:
+                    $( "#economic_info" ).prepend( "<p>Decrease in labor supply for "+ Country.list[key].country + ". Following on from an decrease in government subsidies to babies - less children born.</p>" );
+                  break;
+                  case 2:
+                    $( "#economic_info" ).prepend( "<p>Decrease in labor supply for "+ Country.list[key].country + ". Following on from an epidemic - less laborers in the economicy.</p>" );
+                  break;
+                  case 3:
+                    $( "#economic_info" ).prepend( "<p>Decrease in labor supply for "+ Country.list[key].country + ". Following on from a decrease in retirement age - people work shorter.</p>" );
+                  break;
+                  case 4:
+                    $( "#economic_info" ).prepend( "<p>Decrease in labor supply for "+ Country.list[key].country + ". Following on from a bad harvest - less children born.</p>" );
+                  break;
+                }
+
+              break;
+              case 3: //Capital Boom
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="capital"){
+                    Country.list[key][key2].supply += 50;
+                  }
+                }
+                switch(result){
+                  case 1:
+                    $( "#economic_info" ).prepend( "<p>Increase in capital supply for "+ Country.list[key].country + ". Following on from a innovation domestically - efficency has increased.</p>" );
+                  break;
+                  case 2:
+                    $( "#economic_info" ).prepend( "<p>Increase in capital supply for "+ Country.list[key].country + ". Following on from investment abroad - capital supply has increased.</p>" );
+                  break;
+                  case 3:
+                   $( "#economic_info" ).prepend( "<p>Increase in capital supply for "+ Country.list[key].country + ". Following on from increase in stock - capital efficency has increased.</p>" );
+                  break;
+                  case 4:
+                   $( "#economic_info" ).prepend( "<p>Increase in capital supply for "+ Country.list[key].country + ". Following on from deregulation there is greater investment - capital has increased.</p>" );
+                  break;
+                }
+
+              break;
+              case 4: //Capital Decrease
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="capital"){
+                    Country.list[key][key2].supply -= 50;
+                  }
+                }
+                switch(result){
+                  case 1:
+                    $( "#economic_info" ).prepend( "<p>Decrease in capital supply for "+ Country.list[key].country + ". Following on from a innovation abroad - efficency has decreased.</p>" );
+                  break;
+                  case 2:
+                    $( "#economic_info" ).prepend( "<p>Decrease in capital supply for "+ Country.list[key].country + ". Following on from investors leaving the economy - capital supply has decreased.</p>" );
+                  break;
+                  case 3:
+                   $( "#economic_info" ).prepend( "<p>Decrease in capital supply for "+ Country.list[key].country + ". Following on from decrease in stock - capital efficency has decreased.</p>" );
+                  break;
+                  case 4:
+                   $( "#economic_info" ).prepend( "<p>Decrease in capital supply for "+ Country.list[key].country + ". Following on from regulation there is a reduction in investment - capital has decreased.</p>" );
+                  break;
+                }
+
+              break;
+              case 5: //Land Increase
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="land"){
+                    Country.list[key][key2].supply += 50;
+                  }
+                }
+                switch(result){
+                  case 1:
+                    $( "#economic_info" ).prepend( "<p>Increase in land supply for "+ Country.list[key].country + ". Following on from a succesful war - land has increased.</p>" );
+                  break;
+                  case 2:
+                    $( "#economic_info" ).prepend( "<p>Increase in land supply for "+ Country.list[key].country + ". Following on from deregulation in office market - land has increased.</p>" );
+                  break;
+                  case 3:
+                    $( "#economic_info" ).prepend( "<p>Increase in land supply for "+ Country.list[key].country + ". Following on from a development of mult-story skyscrappers - land has increased.</p>" );
+                  break;
+                  case 4:
+                    $( "#economic_info" ).prepend( "<p>Increase in land supply for "+ Country.list[key].country + ". Following on from an increase in house sharing - land has increased.</p>" );
+                  break;
+                }
+          break;
+              case 6: //Land Decrease
+                for(key2 in Country.list[key]){
+                  if(Country.list[key][key2].name=="land"){
+                    Country.list[key][key2].supply -= 50;
+                  }
+                }
+                switch(result){
+                  case 1:
+                    $( "#economic_info" ).prepend( "<p>Decrease in land supply for "+ Country.list[key].country + ". Following on from a invasion - land has decreased.</p>" );
+  
+                  break;
+                  case 2:
+                    $( "#economic_info" ).prepend( "<p>Decrease in land supply for "+ Country.list[key].country + ". Following on from regulation in office market - land has decreased.</p>" );
+
+                  break;
+                  case 3:
+                    $( "#economic_info" ).prepend( "<p>Decrease in land supply for "+ Country.list[key].country + ". Following on from a reduction in development of mult-story skyscrappers - land has decreased.</p>" );
+                  break;
+                  case 4:
+                    $( "#economic_info" ).prepend( "<p>Decrease in land supply for "+ Country.list[key].country + ". Following on from a more homes being built- land has decreased.</p>" );
+                  break;
+                }
+
+
+              break;
+            } 
+            
+          }
 
           Country.list[country] = self;
 
@@ -671,11 +841,12 @@ LaborPrices = {};
           var name = data[Math.floor(Math.random()*100)].Company; 
           var capital = capitalAmount*18;
           var employees = employeeAmount*10;
+          var land = 20;
           
           var id = Math.random();
           var efficiency = Math.random()*10;
 
-          Competitor(name, sector, capital, employees, 'competitor', id, efficiency, country);
+          Competitor(name, sector, capital, employees, land, 'competitor', id, efficiency, country);
         };
 
       }

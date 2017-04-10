@@ -27,19 +27,21 @@ function updateSectorPrices(){
 
 	    var table = $('<table style="width:50%"></table>').attr('id', simple+'_table');
 	    $("#"+simple).append(table);
+		var colheader = '<tr><th>Sector Name</th><th>Demand</th><th>Supply</th><th>Price</th></tr>\n';
 
-
-
+		table.append(colheader);
 	    for(key in Market.list){
 	      if(Market.list[key].country == UniqueCounties[i]){
+	      	
 	        var sector = $('<tr></tr>').attr('id', Market.list[key].sector+'_table');
-
+	      
+	        console.log(Object.keys(Market.list)[key])
 	        var name = $('<td></td>').text(Market.list[key].sector);
-	        var demand = $('<td></td>').text(Market.list[key].demand);
-	        var supply = $('<td></td>').text(Market.list[key].supply);
-	        var price = $('<td></td>').text(Market.list[key].price);
+	        var demand = $('<td></td>').text(round(Market.list[key].demand,2));
+	        var supply = $('<td></td>').text(round(Market.list[key].supply,2));
+	        var price = $('<td></td>').text(round(Market.list[key].price,2));
 
-
+	        
 	        table.append(sector);
 	        sector.append(name);
 	        sector.append(demand);
@@ -61,15 +63,17 @@ function updateCountryPrices(){
 		    var table = $('<table style="width:50%"></table>').attr('id', simple+'_tableMacro');
 		    $("#"+simple+"_macro").append(table);
 		    var country = Country.list[key]
+		    var colheader = '<tr><th>Country Name</th><th>Demand</th><th>Supply</th><th>Price</th></tr>\n';
+		    table.append(colheader);
 		    for(key2 in country){
 		    	if(typeof(country[key2]) === 'object'){
 
 		        var type = $('<tr></tr>').attr('id', country[key2].name+'_table');
 
 		        var name = $('<td></td>').text(country[key2].name);
-		        var demand = $('<td></td>').text(country[key2].demand);
-		        var supply = $('<td></td>').text(country[key2].supply);
-		        var price = $('<td></td>').text(country[key2].price);
+		        var demand = $('<td></td>').text(round(country[key2].demand,2));
+		        var supply = $('<td></td>').text(round(country[key2].supply,2));
+		        var price = $('<td></td>').text(round(country[key2].price,2));
 
 		        table.append(type);
 		        type.append(name);
@@ -117,3 +121,4 @@ function updateGDP(){
     GDPLevel.validateData();
 	console.log(sumOfGDP);
 }
+
