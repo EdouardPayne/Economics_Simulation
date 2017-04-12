@@ -2,6 +2,7 @@ markets = ["Primary", "Secondary", "Service"]
 countries = ["France", "United Kingdom", "Second"]
 
 LaborPrices = {};
+CapitalPrices = {};
 
       function Competitor(name, sector, capital, employees, land, type, id, efficiency, country) {
            var self = Business(name, sector, capital, employees, land, type, id, efficiency, country);
@@ -39,7 +40,8 @@ LaborPrices = {};
 
       function Player(name, sector, capital, employees, land, type, id, efficiency, country){
         var self = Business(name, sector, capital,  employees,land, type, id, efficiency, country);
-         self.stock=0;
+        self.stock=0;
+        self.capcity=100;
 
          
         self.produceOutput = function(employees, capital){
@@ -55,31 +57,33 @@ LaborPrices = {};
                     Country.list[key][key2].demand = Country.list[key][key2].demand + capital; //store it in a variable so we can manipulate it
                     Country.list[key][key2].price = Country.list[key][key2].demand/Country.list[key][key2].supply
                     costOfCapital = capital * Country.list[key][key2].price
-                    break;
+                  }
+                  if(Country.list[key][key2].name=="land"){
+                    costOfLand = Country.list[key][key2].price*self.land;
                   }
 
 
                   
                 }
-                player.cash -= (costOfLabor + costOfCapital);
+                player.cash -= (costOfLabor + costOfCapital + costOfLand);
 
               }
             }
           for(var key in Market.list){
                 if(self.country==Market.list[key].country){
                   if(self.sector==Market.list[key].sector){
-                    capacity = 100;
+                      self.capacity = 100;
                     if(self.upgrades=="Start-up"){
-                      capacity = 1000;
+                      self.capacity = 1000;
                     } else if (self.upgrades=="Medium Firm"){
-                      capcity = 10000;
+                      self.capcity = 10000;
                     } else if (self.upgrades=="Large Firm"){
-                      capacity = 100000;
+                      self.capacity = 100000;
                     }
                     output = employees*capital;
 
-                    spareCapacity = output/capacity;
-                    if(output>capacity){
+                    spareCapacity = output/self.capacity;
+                    if(output>self.capacity){
                     output = output / Math.exp(spareCapacity-1);}
 
                     self.stock += output;
@@ -156,18 +160,18 @@ LaborPrices = {};
             for(var key in Market.list){
                   if(self.country==Market.list[key].country){
                     if(self.sector==Market.list[key].sector){
-                      capacity = 100;
+                      self.capacity = 100;
                       if(self.upgrades=="Start-up"){
-                        capacity = 1000;
+                        self.capacity = 1000;
                       } else if (self.upgrades=="Medium Firm"){
-                        capcity = 10000;
+                        self.capcity = 10000;
                       } else if (self.upgrades=="Large Firm"){
-                        capacity = 100000;
+                        self.capacity = 100000;
                       }
                       output = employees*capital;
 
-                      spareCapacity = output/capacity;
-                      if(output>capacity){
+                      spareCapacity = output/self.capacity;
+                      if(output>self.capacity){
                       output = output / Math.exp(spareCapacity-1);}
 
                       originalSupplyMarket = Market.list[key].supply
@@ -448,7 +452,7 @@ LaborPrices = {};
                   if(immigrants>=Country.list[key3][key2].supply){
                     immigrants=Country.list[key3][key2].supply-1
                   }
-                  immigrants/=10;
+                  immigrants = immigrants/30;
                   console.log(immigrants)
                   Country.list[key3][key2].supply-=immigrants;
                   Country.list[key3][key2].price = Country.list[key3][key2].demand/Country.list[key3][key2].supply;
@@ -460,6 +464,37 @@ LaborPrices = {};
               
               }
            } 
+
+          self.capitalMovement = function(key){
+            for(key2 in Country.list[key]){
+              if(Country.list[key][key2].name=="capital"){
+                CapitalPrices[Country.list[key].country]=Country.list[key][key2].price;
+                for(key3 in CapitalPrices){
+                  original = CapitalPrices[key3]
+                  console.log(key3)
+                  difference = Country.list[key][key2].price-CapitalPrices[key3]
+                  movement = Country.list[key][key2].supply
+                  value = difference/original
+
+                  Country.list[key3][key2].supply
+                  immigrants= value*Country.list[key3][key2].supply
+                  console.log(immigrants)
+                  immigrants = immigrants/10;
+
+                  if(immigrants>=Country.list[key3][key2].supply){
+                    immigrants=Country.list[key3][key2].supply-1
+                  }
+                  
+                  console.log(immigrants)
+                  Country.list[key3][key2].supply-=immigrants;
+                  Country.list[key3][key2].price = Country.list[key3][key2].demand/Country.list[key3][key2].supply;
+                  Country.list[key][key2].supply+=immigrants;
+                  Country.list[key][key2].price = Country.list[key][key2].demand/Country.list[key][key2].supply;
+                  console.log(value)
+                }
+              }
+            }
+          }
           self.countryShock = function(key){
             
             chance = Math.round(Math.random()*100)

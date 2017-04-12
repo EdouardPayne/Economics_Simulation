@@ -102,7 +102,8 @@ var priceCapital = AmCharts.makeChart("priceCapital", {
     }
 });
 
-var GDPLevel = AmCharts.makeChart("GDPLevel", {
+priceHistory = function(){
+  return GDPLevel = AmCharts.makeChart("GDPLevel", {
     "type": "serial",
     "theme": "light",
     "marginRight": 80,
@@ -146,4 +147,7 @@ var GDPLevel = AmCharts.makeChart("GDPLevel", {
     "export": {
         "enabled": true
     }
-});
+});  
+}
+
+priceHistory();

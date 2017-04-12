@@ -173,7 +173,8 @@
                                 </div>
                                 <div class="col-md-6">
                                   <h4>Business Advisor:</h4>
-                                  <p id="businessAdvice"></p>
+                                  <p id="businessAdviceOUTPUT"></p>
+                                  <p id="businessAdvicePM"></p>
                                 </div>
                               </div>
                           </div>
@@ -224,6 +225,7 @@ var filterInt = function(value) {
     return Number(value);
   return NaN;
 }
+
 
 
 
@@ -306,8 +308,10 @@ $('#nextday[title]').qtip()
   $('#updateProductionDetails form, input').keyup(function(event){
       employees = 0; 
       capital = 0;
+
       employees = Number((document.getElementById('employeesUpdate').value));
       capital = Number((document.getElementById('capitalUpdate').value));
+
       marginalEmployees = employees + 1;
       marginalCapital = capital + 1;
 
@@ -325,12 +329,18 @@ $('#nextday[title]').qtip()
       $("#quantityOutput").text(income.output);
       $("#incomeOutput").text(income.totalIncome);
       $("#profitGoods").text((income.totalIncome)-(cost.totalCost));
+      output = employees*capital
+      if((output) > (player.capcity)){sellOutput
+        $("#businessAdviceOUTPUT").text('You are producing over-capcity, upgrade your business to be able to produce more. Your capcity is ' + player.capcity + ' and you are producing ' + output + '. The penalty of producing over capcity is a -'+ round((((output)-income.output)/output)*100,2) + '% decrease on final output.');
+      } else{
+         $("#businessAdviceOUTPUT").text("");
+      }
 
       if(((marginalIncome.totalIncome)-(income.totalIncome))>((marginalCost.totalCost)-(cost.totalCost))){ //this follows profit maximisation rule in economics whereby MR=MC. If MR>MC then the company should produce more output as they can make additional profit. If however, MR<MC the company should reduce output as additional output is making a loss.
-        $("#businessAdvice").text("Produce More, since MR>MC, you will be able to make more profit.");
+        $("#businessAdvicePM").text("Produce More, since MR>MC, you will be able to make more profit.");
 
       } else{
-        $("#businessAdvice").text("Produce Less, since MR<MC you will be able to make more profit.");
+        $("#businessAdvicePM").text("Produce Less, since MR<MC you will be able to make more profit.");
       }
 
   });
@@ -400,6 +410,7 @@ sellStock = function(){
     if(amount<=player.stock){
       player.sellOutput(amount);
       validateStock();
+      $('#sellOutput').attr("disabled", true);
     }
     
   });
@@ -478,8 +489,11 @@ function addBusinesses(){
 }
 
 function immigration(){
-  for(key in Country.list){
-    Country.list[key].immigrate(key);
+  if(game.tickCount>5){
+    for(key in Country.list){
+      Country.list[key].immigrate(key);
+      Country.list[key].capitalMovement(key);
+    }
   }
 }
 
@@ -498,6 +512,7 @@ function resetDemand(){
   resetDemandMarket();
   resetDemandCountry();
   LaborPrices = {};
+  $('#sellOutput').attr("disabled", false);
 }
 
 function upgrade(){
@@ -516,9 +531,9 @@ function shocks(){
 start_game();
 
 Tick = function(){
+
   
   resetDemand();
-
   produceGoods();
   
   demandOfFactors();
@@ -568,6 +583,24 @@ Competitor.generate(20, "random", "random"); //Generate competitor
 
 
 modifyDOM();
+function test2(){
+  CountryDOM = []
+  for (var key in Market.list) {
+    CountryDOM.push(Market.list[key].country);
+    }
+
+
+  var UniqueCounties = CountryDOM.filter(function(elem, pos) {
+    return CountryDOM.indexOf(elem) == pos;  //http://mikeheavers.com/tutorials/removing_duplicates_in_an_array_using_javascript/
+  });
+  var w = window;
+  for (var i = 0; i < UniqueCounties.length; i++) {
+    simple = UniqueCounties[i].replace(/\s+/, "") 
+    return w["price_level"+simple] = [];
+  }
+}
+
+test2();
 </script>
 
 <script src="files/chartdata.js"></script>
