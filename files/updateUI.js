@@ -41,7 +41,12 @@ function updateSectorPrices(){
 	        var supply = $('<td></td>').text(round(Market.list[key].supply,2));
 	        var price = $('<td></td>').text(round(Market.list[key].price,2));
 
-	        
+	        w[simple+Market.list[key].sector+"_data"].push({
+	        	date: game.tickCount,
+	        	visits: Market.list[key].price,
+	        })
+
+	        w[simple+Market.list[key].sector].validateData();
 	        table.append(sector);
 	        sector.append(name);
 	        sector.append(demand);

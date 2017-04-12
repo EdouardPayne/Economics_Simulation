@@ -286,6 +286,9 @@ modifyDOM = function(){
         var price = $('<td></td>').text(Market.list[key].price);
 
 
+
+        $("#"+simple).prepend("<div id="+simple+Market.list[key].sector+" style='width: 640px; height: 400px; overflow: visible; text-align: left;'>");
+
         table.append(sector);
         sector.append(name);
         sector.append(demand);
@@ -583,24 +586,9 @@ Competitor.generate(20, "random", "random"); //Generate competitor
 
 
 modifyDOM();
-function test2(){
-  CountryDOM = []
-  for (var key in Market.list) {
-    CountryDOM.push(Market.list[key].country);
-    }
 
+ 
 
-  var UniqueCounties = CountryDOM.filter(function(elem, pos) {
-    return CountryDOM.indexOf(elem) == pos;  //http://mikeheavers.com/tutorials/removing_duplicates_in_an_array_using_javascript/
-  });
-  var w = window;
-  for (var i = 0; i < UniqueCounties.length; i++) {
-    simple = UniqueCounties[i].replace(/\s+/, "") 
-    return w["price_level"+simple] = [];
-  }
-}
-
-test2();
 </script>
 
 <script src="files/chartdata.js"></script>
