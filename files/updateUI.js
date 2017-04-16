@@ -23,7 +23,7 @@ function updateSectorPrices(){
 	    simple = UniqueCounties[i].replace(/\s+/, "") 
 	  	$("#"+simple+"_table").remove();
 	     
-	    $("#dynamicTable").append("<div class='tab-pane' id="+simple+">")
+	    
 
 	    var table = $('<table style="width:50%"></table>').attr('id', simple+'_table');
 	    $("#"+simple).append(table);
@@ -35,12 +35,12 @@ function updateSectorPrices(){
 	      	
 	        var sector = $('<tr></tr>').attr('id', Market.list[key].sector+'_table');
 	      
-	        console.log(Object.keys(Market.list)[key])
+	    
 	        var name = $('<td></td>').text(Market.list[key].sector);
 	        var demand = $('<td></td>').text(round(Market.list[key].demand,2));
 	        var supply = $('<td></td>').text(round(Market.list[key].supply,2));
 	        var price = $('<td></td>').text(round(Market.list[key].price,2));
-
+	        var w = window;
 	        w[simple+Market.list[key].sector+"_data"].push({
 	        	date: game.tickCount,
 	        	visits: Market.list[key].price,
@@ -68,7 +68,7 @@ function updateCountryPrices(){
 		    var table = $('<table style="width:50%"></table>').attr('id', simple+'_tableMacro');
 		    $("#"+simple+"_macro").append(table);
 		    var country = Country.list[key]
-		    var colheader = '<tr><th>Country Name</th><th>Demand</th><th>Supply</th><th>Price</th></tr>\n';
+		    var colheader = '<tr><th>Factor Name</th><th>Demand</th><th>Supply</th><th>Price</th></tr>\n';
 		    table.append(colheader);
 		    for(key2 in country){
 		    	if(typeof(country[key2]) === 'object'){
@@ -79,12 +79,21 @@ function updateCountryPrices(){
 		        var demand = $('<td></td>').text(round(country[key2].demand,2));
 		        var supply = $('<td></td>').text(round(country[key2].supply,2));
 		        var price = $('<td></td>').text(round(country[key2].price,2));
+		       
+		       	var w = window;
+		        w[simple+country[key2].name+"_data"].push({
+		        	date: game.tickCount,
+		        	visits: country[key2].price,
+		        })
 
+		        w[simple+country[key2].name].validateData();
+		        	
 		        table.append(type);
 		        type.append(name);
 		        type.append(demand);
 		        type.append(supply);
 		        type.append(price);
+
 		        } else{};
 		    }
 		}
@@ -98,6 +107,7 @@ function updateCompanyDetailsUI(){
         $("#numberCapital").text(player.capital);
         $("#stockLevels").text(player.stock);
         $("#cash").text(player.cash);
+        $("#capacity").text(player.capacity);
 }
 
 function updateChart(){
@@ -124,6 +134,6 @@ function updateGDP(){
       visits: sumOfGDP,
     });
     GDPLevel.validateData();
-	console.log(sumOfGDP);
+	
 }
 

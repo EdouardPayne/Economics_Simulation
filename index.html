@@ -43,10 +43,10 @@
                       <input type="text" name="name" id="name" class="form-control" placeholder="Your Name">
                     </div>
                     <div class="form-group">
-                      <input type="text" name="capital" id="capital" class="form-control" placeholder="Capital">
+                      <input type="number" name="capital" id="capital" class="form-control" placeholder="Capital">
                     </div>
                     <div class="form-group">
-                      <input type="text" name="employees" id="employees" class="form-control" placeholder="Employees">
+                      <input type="number" name="employees" id="employees" class="form-control" placeholder="Employees">
                     </div>
                     Select Sector:
                     <div class="form-group">
@@ -58,8 +58,30 @@
                     </div>
                     
                   </form>
-                  <button id="businessSubmit" class="btn btn-default" class="form-control">Submit Business Details</button>
-                  <br>           
+                  <button class="btn btn-default" id="customSubmit" style="
+    float: left">Add Custom Country</button> 
+                  <div id="alternate"> OR
+                    <button id="businessSubmitDefault" class="btn btn-default" class="form-control">Submit Business Details</button>
+                    </br>
+                  </div>
+                  </br>
+                  <div id="customCountries">
+                  <form>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="countryName" placeholder="Country Name">
+                    </div>
+                    <div class="form-group">
+                      <input type="number" class="form-control" id="capitalSupply" placeholder="Supply of Capital">
+                    </div>
+                    <div class="form-group">
+                      <input type="number" class="form-control" id="laborSupply" placeholder="Supply of Labor">
+                    </div>
+                    <div class="form-group">
+                      <input type="number" class="form-control" id="landSupply"placeholder="Supply of Land">
+                    </div>
+                    
+                  </form><button id="businessSubmitCustom" class="btn btn-default" class="form-control">Submit Business Details</button></div>
+
           </div>
           <div class="row overview">
 
@@ -69,12 +91,12 @@
               
                 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#companyPage">Company Information</a></li>
+                    <li class="active"><a data-toggle="tab" href="#tutorialDetails">Company Information</a></li>
                     <li><a data-toggle="tab" href="#marketPage">Market Information</a></li>
                     <li><a data-toggle="tab" href="#countriesPage">Country Information</a></li>
                     <li><a data-toggle="tab" href="#MacroPage">Economics Shocks</a></li>
                     <li><a data-toggle="tab" href="#productionPage">Produce Output</a></li>
-                    <li><a data-toggle="tab" href="#upgradePage">Upgrade Business</a></li>
+                    <li><a data-toggle="tab" href="#managePage">Manage Business</a></li>
                     <li><a data-toggle="tab" href="#diagramPage">Statistics</a></li>
                 </ul>
               </div>
@@ -83,29 +105,37 @@
                   <h2>
           
                     <button onclick="Tick()" id="nextday"  class="btn btn-primary"  data-toggle="tooltip" title="In order to proceed to next day go to 'Produce Output' tab and produce output and sell it">Simulate Next Day</button>
+                    <h5><b>Company Name: </b><span id="companyName"></span></h5>
+                    <h5><b>Employees: </b><span id="numberEmployees"></span></h5>
+                    <h5><b>Capital: </b><span id="numberCapital"></span></h5>
+                    <h5><b>Stock: </b><span id="stockLevels"></span></h5>
+                    <h5><b>Cash: </b><span id="cash"></span></h5>
+                    <h5><b>Capacity: </b><span id="capacity"></span></h5>
+
        
                   </h2>
                 </div>
                 <div class="col-md-10">
                   <div class="tab-content">
-                    <div class="companyDetails tab-pane fade in active" id="companyPage">
-                      <h2>Company Details</h2>
-                      <table style="width:100%">
-                        <tr>
-                          <th>Company Name</th>
-                          <th>Number of Employees</th>
-                          <th>Number of Capital</th> 
-                          <th>Stock</th> 
-                          <th>Cash</th>
-                        </tr>
-                        <tr>
-                          <td id="companyName"></td>
-                          <td id="numberEmployees"></td>
-                          <td id="numberCapital"></td>  
-                          <td id="stockLevels"></td>
-                          <td id="cash"></td> 
-                        </tr>
-                      </table>
+                    <div class="tutorialDetails tab-pane fade in active" id="tutorialDetails">
+                      <h2>Tutorial</h2>
+                      <p>Welcome to the Business Economics Game. This game aims to provide an interactive experience for you to understand key economic principles. It is advised you read the tutorial in order to have a seamless understanding of the game.</p>
+                      <h3>Background to the game:</h3>
+                      <p>You have just established yourself as a new business. As a new business you will be competing with other businesses in order to maximise your profits and ultimately to become the market leader within that particular sector. As a result, you will not only be competing against businesses in different sectors, but also businesses in different countries.</p>
+                      <h3>How to make money:</h3>
+                      <p>To make money you will need to produce output for your businesses. To do this you will need to go to the “Produce Output” tab. From the tab you can select the amount of output to produce.
+                      The formula for producing output is “Employees * Capital”
+                      For example if you select 5 employees and 5 Capital you will produce 25 Output.
+                      The more you demand of employees and capital, the greater the price will rise for those factors of production. Moreover, the more you sell the lower the price for the goods due to increased supply. As a result, finding the correct balance will be critical in making the most money.
+                      Not to worry though, there will be a business advisor in the “Production Output” how will give you advice on whether you should produce more, or produce less.
+                      </p>
+                      <h3>Upgrading your business:</h3>
+                      <p>Your business will have a capacity that will be the limit of the amount that you can produce. If you produce over this limit you will get a penalty on final output. To increase the limit you will need to upgrade your business in the “Upgrade Business” section.</p>
+                      <h3>Survival:</h3>
+                      <p>In order to survive in this simulation your cash deposits cannot be lower than 0. If it reaches such a stage then your business will go bankrupt and you will lose the game.</p>
+                      <h3>Factors of Production:</h3>
+                      <p>There are four factors of production in this economy. The three that are observable in this simulation are the factor of land, labor and capital. The innate factor of production which is not observable in this simulation is entrepreneurship, and this is dependent upon the business. As you upgrade your business you will need more land in order to increase your capacity. In addition you will need more employees and capital in order to produce more output.</p>
+
                     </div>
 
                     <div class="marketDetails tab-pane fade"  id="marketPage">
@@ -144,32 +174,39 @@
                     <div class="manageProduction tab-pane fade" id="productionPage">
                       <h2>Manage Production</h2>
                         <div class="row">
-                          <div class="updateProductionDetails col-md-9">
+                          <div class="col-md-9" id="updateProductionDetails">
                             <h3>Update Production Details</h3>
 
                             <form>
-                              <input input type="number" id="capitalUpdate" placeholder="Update Capital Amount"></input>
-                              <input input type="number" id="employeesUpdate" placeholder="Update Employee Amount"></input>
+                              <input input type="number" id="capitalUpdate" placeholder="Update Capital Amount" onkeyup="businessAdvice()"></input>
+                              <input input type="number" id="employeesUpdate" placeholder="Update Employee Amount" onkeyup="businessAdvice()"></input>
                               <button type='button' id="productionCreate">Produce Output</button>
                             </form>
                               <div class="row">
                                 <div class="col-md-6">
-                                    <h4>Estimated Cost:</h4>
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <h4>Estimated Income</h4>
+                                      
+                                      <p>Price of Output:</p> <span id="priceOutput"></span>
+                                      <p>Quantity:</p><span id="quantityOutput"></span>
+                                      <b><p>Total Income:</p></b><span id="incomeOutput"></span>
+                                    </div>
+                                    <div class="col-md-6">              
+                                      <h4>Estimated Cost:</h4>
                                     
-                                    <p>Capital Cost:</p> <span id="capitalCost"></span>
-                                    <p>Labor Cost:</p><span id="laborCost"></span>
-                                    <p>Land Cost</p><span id="landCost"></span>
-                                    <p>Total Cost:</p><span id="totalCost"></span>
+                                        <p>Capital Cost:</p> <span id="capitalCost"></span>
+                                        <p>Labor Cost:</p><span id="laborCost"></span>
+                                        <p>Land Cost</p><span id="landCost"></span>
+                                        <b><p>Total Cost:</p></b><span id="totalCost"></span>
+                                      </div>
+                                  </div>
 
-                                    <h4>Estimated Income</h4>
-                                    
-                                    <p>Price of Output:</p> <span id="priceOutput"></span>
-                                    <p>Quantity:</p><span id="quantityOutput"></span>
-                                    <p>Income:</p><span id="incomeOutput"></span>
 
-                                    <h4>Profit</h4>
+
+                                    <b><h4>Profit:</h4></b>
                                     
-                                    <p>Profit</p> <span id="profitGoods"></span>
+                                    <span id="profitGoods"></span>
                                 </div>
                                 <div class="col-md-6">
                                   <h4>Business Advisor:</h4>
@@ -187,11 +224,40 @@
                           </div>
                         </div>
                     </div>
-                    <div class="upgradeBusiness tab-pane fade" id="upgradePage">
-                      <h3> You Can Upgrade your business here </h3>
+                    <div class="manageBusiness tab-pane fade" id="managePage">
+                      <h3> You Can Manage your business here: </h3>
+                      <div class="row">
+                        <div class="col-md-6">
+                        <h4>Upgrade Your Business:</h4>
+                        <button type="button" class="btn btn-primary" id="startUp" disabled>Start-up</button>
+                        <button type="button" class="btn btn-primary" id="mediumFirm" disabled>Medium Firm</button>
+                        <button type="button" class="btn btn-primary" id="largeFirm" disabled>Large Firm</button>
+                        <p>Upgrading your business provides a wide range of unlocked functionality and benefits.</p>
 
-                      <button type="button" id="startUp" disabled>Start-up</button>
-                      <button type="button" id="mediumFirm" disabled>Medium Firm</button>
+
+                        </div>
+
+                        <div class="col-md-3">
+                         <h4>Change Sector:</h4> 
+                         <div class="form-group">
+                          <select id="sectorChoice">
+                            <option value="Primary">Primary</option>
+                            <option value="Secondary">Secondary</option>
+                            <option value="Service">Service</option>
+                          </select>
+                          
+                        </div>
+                         <p>Your business must be a "Medium Firm" or higher to be able to change your sector</p><button type="button" class="btn btn-primary" id="changeSector" disabled>Change Sector</button>
+                        </div>
+                        <div class="col-md-3">
+                        <h4>Change Country:</h4>
+                        <div class="form-group">
+                        <select id="countryChoice"></select>
+                        </div>
+                        <p>Your business must be a "Large Firm" or higher to be able to change your country</p><button type="button" class="btn btn-primary" id="changeCountry" disabled>Change Country</button>
+                        </div>
+                      </div>
+
                     </div>
 
                     <div class="diagrams tab-pane fade" id="diagramPage">
@@ -215,7 +281,8 @@
 
 
     <script>
- 
+ $( ".overview" ).hide();
+ $("#customCountries").hide();
     var game = {
       tickCount:0,
     }
@@ -229,7 +296,7 @@ var filterInt = function(value) {
 
 
 
-modifyDOM = function(){
+modifyDOM = function(){ //this function aims to modify the DOM to display the custom countires
 
   CountryDOM = []
   for (var key in Market.list) {
@@ -240,27 +307,44 @@ modifyDOM = function(){
   var UniqueCounties = CountryDOM.filter(function(elem, pos) {
     return CountryDOM.indexOf(elem) == pos;  //http://mikeheavers.com/tutorials/removing_duplicates_in_an_array_using_javascript/
   });
-  for(key in Country.list){
+
+  for(key in Country.list){ //modify the DOM in the "Country Information" tab
     simple = Country.list[key].country.replace(/\s+/, "")
-    $( "#countryInfo" ).append("<li><a data-toggle='tab' href=#"+simple+"_macro>"+Country.list[key].country+"</a></li>")
+    $( "#countryInfo" ).append("<li><a data-toggle='tab' href=#"+simple+"_macro>"+Country.list[key].country+"</a></li>") //this is the navigation tabs
 
     $("#dynamicTableCountry").append("<div class='tab-pane' id="+simple+"_macro>")
     var table = $('<table style="width:50%"></table>').attr('id', simple+'_tableMacro');
+    $("#countryChoice").append("<option value"+Country.list[key].country+"=>"+Country.list[key].country+"</option>");
     $("#"+simple+"_macro").append(table);
+    $("#"+simple+"_macro").prepend("<div class='row' id='"+simple+"macro_graphs'></div>")
     var country = Country.list[key]
-    for(key2 in country){
-        var type = $('<tr></tr>').attr('id', country[key2].name+'_table');
+    for(key2 in country){  //create the table for each factor of prodduction
+              if (typeof country[key2].name !== "undefined") {
+                if(country[key2].name !== ""){ //filter out keys which are undefined or have no name
+                  var type = $('<tr></tr>').attr('id', country[key2].name+'_table');
 
-        var name = $('<td></td>').text(country[key2].name);
-        var demand = $('<td></td>').text(country[key2].demand);
-        var supply = $('<td></td>').text(country[key2].supply);
-        var price = $('<td></td>').text(country[key2].price);
+                  var name = $('<td></td>').text(country[key2].name);
+                  var demand = $('<td></td>').text(country[key2].demand);
+                  var supply = $('<td></td>').text(country[key2].supply);
+                  var price = $('<td></td>').text(country[key2].price);
 
-        table.append(type);
-        type.append(name);
-        type.append(demand);
-        type.append(supply);
-        type.append(price);
+                  table.append(type);
+                  type.append(name);
+                  type.append(demand);
+                  type.append(supply);
+                  type.append(price);
+                  $("#"+simple+"macro_graphs").append("<div class='col-md-4' style='padding: 0;'id='"+simple+country[key2].name+"_graph'></div>")
+
+                  $("#"+simple+country[key2].name+"_graph").prepend("<div id="+simple+country[key2].name+" style='width: 100%; height: 400px; overflow: visible; text-align: left;'>");
+
+ 
+                  $("#"+simple+country[key2].name+"_graph").prepend("<h3>Factor "+country[key2].name+"</h3>")
+
+
+                }
+ 
+        }
+
     }
   }
 
@@ -273,10 +357,10 @@ modifyDOM = function(){
 
     var table = $('<table style="width:50%"></table>').attr('id', simple+'_table');
     $("#"+simple).append(table);
+    $("#"+simple).prepend("<div class='row' id='"+simple+"_graphs'></div>")
 
-
-
-    for(key in Market.list){
+    
+    for(key in Market.list){ //create a table for each market
       if(Market.list[key].country == UniqueCounties[i]){
         var sector = $('<tr></tr>').attr('id', Market.list[key].sector+'_table');
 
@@ -285,9 +369,13 @@ modifyDOM = function(){
         var supply = $('<td></td>').text(Market.list[key].supply);
         var price = $('<td></td>').text(Market.list[key].price);
 
+        
+
+        $("#"+simple+"_graphs").prepend("<div class='col-md-4' style='padding: 0;'id='"+simple+Market.list[key].sector+"_graph'></div>")
 
 
-        $("#"+simple).prepend("<div id="+simple+Market.list[key].sector+" style='width: 640px; height: 400px; overflow: visible; text-align: left;'>");
+        $("#"+simple+Market.list[key].sector+"_graph").prepend("<div id="+simple+Market.list[key].sector+" style='width: 100%; height: 400px; overflow: visible; text-align: left;'>");
+        $("#"+simple+Market.list[key].sector+"_graph").prepend("<h3>"+Market.list[key].sector+" Sector</h3>")
 
         table.append(sector);
         sector.append(name);
@@ -305,38 +393,40 @@ modifyDOM = function(){
   }
 }
 
-$('#nextday[title]').qtip()
 
 
-  $('#updateProductionDetails form, input').keyup(function(event){
+
+businessAdvice = function(){
       employees = 0; 
       capital = 0;
 
-      employees = Number((document.getElementById('employeesUpdate').value));
-      capital = Number((document.getElementById('capitalUpdate').value));
+      employees = Number((document.getElementById('employeesUpdate').value)); //get the amount of employees entered and convert to number
+      capital = Number((document.getElementById('capitalUpdate').value)); //get the amount of capital and convert to the number
 
-      marginalEmployees = employees + 1;
-      marginalCapital = capital + 1;
+      marginalEmployees = employees + 1; //add +1 to the value (this will be used to work out if MR>MC and thus if the player should produce more or less)
+      marginalCapital = capital + 1; //add +1 to the value (this will be used to work out if MR>MC and thus if the player should produce more or less)
 
-      cost = player.predictiveCost(employees, capital);
-      income = player.predictIncome(employees, capital);
-      marginalCost = player.predictiveCost(marginalEmployees, marginalCapital);
+      cost = player.predictiveCost(employees, capital); //predict the cost of producing the output, this follows the increase in price of factors of production from a rise in demand
+      income = player.predictIncome(employees, capital); //predict the income of producing the output, this follows from the decrease in price of unit sold following from a rise in supply
+      marginalCost = player.predictiveCost(marginalEmployees, marginalCapital); //this uses the same function as above however it is from an additional unit of production
       marginalIncome = player.predictIncome(marginalEmployees, marginalCapital)
+      //this uses the same function as above however it is from an additional unit of production
 
-      $("#laborCost").text(cost.laborCost);
-      $("#capitalCost").text(cost.capitalCost);
-      $("#landCost").text(cost.landCost);
-      $("#totalCost").text(cost.totalCost);
+      $("#laborCost").text(cost.laborCost); //work of the labor cost
+      $("#capitalCost").text(cost.capitalCost); //work out the capital cost
+      $("#landCost").text(cost.landCost); //work out the land cost (should be fixed as we are not changing the supply and demand of land however it is useful for the player to see this cost as it will form as part of the total cost)
+      $("#totalCost").text(cost.totalCost); //work out the total cost
       
-      $("#priceOutput").text(income.price);
-      $("#quantityOutput").text(income.output);
-      $("#incomeOutput").text(income.totalIncome);
-      $("#profitGoods").text((income.totalIncome)-(cost.totalCost));
+      $("#priceOutput").text(income.price); //work out the price
+
+      $("#quantityOutput").text(income.output); //work out the output from employees * capital
+      $("#incomeOutput").text(income.totalIncome); //from the price and output work out the total income
+      $("#profitGoods").text(round((income.totalIncome)-(cost.totalCost),2)); //work out the profit
       output = employees*capital
-      if((output) > (player.capcity)){sellOutput
-        $("#businessAdviceOUTPUT").text('You are producing over-capcity, upgrade your business to be able to produce more. Your capcity is ' + player.capcity + ' and you are producing ' + output + '. The penalty of producing over capcity is a -'+ round((((output)-income.output)/output)*100,2) + '% decrease on final output.');
+      if((output) > (player.capcity)){sellOutput //check if the output is above the player capacity
+        $("#businessAdviceOUTPUT").text('You are producing over-capacity, upgrade your business to be able to produce more. Your capcity is ' + player.capcity + ' and you are producing ' + output + '. The penalty of producing over capcity is a -'+ round((((output)-income.output)/output)*100,2) + '% decrease on final output.'); //If so display the warning explaining the issue
       } else{
-         $("#businessAdviceOUTPUT").text("");
+         $("#businessAdviceOUTPUT").text(""); //If not everything is great!
       }
 
       if(((marginalIncome.totalIncome)-(income.totalIncome))>((marginalCost.totalCost)-(cost.totalCost))){ //this follows profit maximisation rule in economics whereby MR=MC. If MR>MC then the company should produce more output as they can make additional profit. If however, MR<MC the company should reduce output as additional output is making a loss.
@@ -346,80 +436,78 @@ $('#nextday[title]').qtip()
         $("#businessAdvicePM").text("Produce Less, since MR<MC you will be able to make more profit.");
       }
 
-  });
+  }
 
     Market.list = {};
     Competitor.list = {};
     Country.list = {};
-
-start_game = function(){
-  $( ".overview" ).hide();
-
-   //when the <submit> button is clicked
-  $('#businessSubmit').click(function(){
-  //store the user's entry in a variable
+$('#customSubmit').click(function(){
+    $('#customCountries').show();
+    $('#alternate').hide()
+  });
 
 
-  
-    var name = document.getElementById('name').value; //find business name
-    var sector = document.getElementById("sectorPrices").value; //find sector
-    var capital = parseFloat(document.getElementById('capital').value); //find business name
-    var employees = parseFloat(document.getElementById('employees').value); //find business name
-    $( ".intro" ).hide();
-   
-    $( ".overview" ).show();
-
-
-    player = new Player("Ed", "Primary", 2, 2, 20, 'player',2,10, "France");
-
-    player.cash = 50;
-
-
-    $("#companyName").append(player.name);
-    $("#numberEmployees").append(player.employees);
-    $("#numberCapital").append(player.capital);
-    $("#foreCastedIncome").append(player.income-player.expenses);
-    $("#cash").append(player.cash);
-    //update the html in the second form to show the user's entered name  
-    Tick();
-    });
-}
 
 
 
 updateProductionDetails = function(){
-  $('#productionCreate').click(function(){
+  $('#productionCreate').click(function(){ //checks whether the "Produce output" button was selected
       player.capital = Number(document.getElementById('capitalUpdate').value);
       player.employees =  Number(document.getElementById('employeesUpdate').value);
       $("#numberEmployees").text(player.employees);
       $("#numberCapital").text(player.capital);
 
-      player.produceOutput(player.employees,player.capital);
+      player.produceOutput(player.employees,player.capital); //produce the output from the capital and employees
 
 
 
   });
 
+}
 
-  $('#startUp').click(function(){
+manageBusiness = function(){
+    $('#startUp').click(function(){ //upgrade your business
       player.firstUpgrade();
       $('#startUp').attr('disabled', true);
+      updateCompanyDetailsUI();
+  });
+  $('#mediumFirm').click(function(){ //upgrade your business
+      player.secondUpgrade();
+      $('#mediumFirm').attr('disabled', true);
+      $('#changeSector').attr('disabled', false);
+      updateCompanyDetailsUI();
+  });
+  $('#largeFirm').click(function(){ //upgrade your business
+      player.thirdUpgrade();
+      $('#largeFirm').attr('disabled', true);
+      $('#changeCountry').attr('disabled', false);
+      updateCompanyDetailsUI();
+  });
+
+  $('#changeSector').click(function(){
+    changedSector = $('#sectorChoice').val();
+    player.sector = changedSector;
+  });
+
+  $('#changeCountry').click(function(){
+    changedCountry = $('#countryChoice').val();
+    player.country = changedCountry;
   });
 }
 
-sellStock = function(){
+sellStock = function(){ //sell the stock of your business
   $('#sellOutput').click(function(){
     amount=Number(document.getElementById('sellAmount').value);
     if(amount<=player.stock){
       player.sellOutput(amount);
       validateStock();
-      $('#sellOutput').attr("disabled", true);
+      checkUpgrades();
     }
     
   });
 }
 
-validateStock = function(){
+validateStock = function(){ //validate the next day
   if(game.tickCount == 1 && player.stock == 0){
      $('#nextday').attr("disabled", true);
   } else{
@@ -427,13 +515,25 @@ validateStock = function(){
   }
 }
 
-function round(value, precision) {
+checkUpgrades = function(){
+  if(player.cash>= 25 && player.upgrades['Start-up']==false){
+    $('#startUp').attr("disabled", false);
+  } else if (player.cash>=5000 && player.upgrades['Medium Firm']==false){
+    $('#mediumFirm').attr("disabled", false);
+  } else if (player.cash>=5000000 && player.upgrades['Large Firm']==false){
+    $('#largeFirm').attr("disabled", false);
+  }
+}
+
+function round(value, precision) { //function which rounds number
     var multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
 }
 
 
 updateProductionDetails();
+
+manageBusiness();
 
 sellStock();
 
@@ -442,7 +542,7 @@ sellStock();
 
 
 
-function produceGoods(){
+function produceGoods(){ 
   for(var key in Competitor.list){
     Competitor.list[key].produce(); //loops through businesses and produces output and demand
   } 
@@ -460,13 +560,13 @@ function generatePrice(){
     Market.list[key].generatePrice(); //loops through markets and determines the price of these goods
   }
   for(var key in Country.list){
-    Country.list[key].generatePrice(key);
+    Country.list[key].generatePrice(key); //loops through country list and determines price of factors of production
   }
 }
 
 function cyclicalDemand(){
   for(var key in Market.list){
-    Market.list[key].demand = Market.list[key].demand * Market.list[key].cycliacalDemand();
+    Market.list[key].demand = Market.list[key].demand * Market.list[key].cycliacalDemand(); //cyclical demand of goods
   }
 }
 
@@ -480,34 +580,35 @@ function exchangeGoods(){
 
 function checkCashFlow(){
   for(var key2 in Competitor.list){
-   // Business.list[key2].generateExpenseFactor();
-    Competitor.list[key2].checkCashFlow(); 
+    Competitor.list[key2].checkCashFlow(); //check if the competitors are not bankrupt
   }
+
+  player.checkCashFlow(); //check if player is not bankrupt
 }
 
 function addBusinesses(){
   for(key in Market.list){
-    Market.list[key].newEntrants();
+    Market.list[key].newEntrants(); //check the demand and supply of each sector and generate competitors
   }
 }
 
 function immigration(){
   if(game.tickCount>5){
     for(key in Country.list){
-      Country.list[key].immigrate(key);
-      Country.list[key].capitalMovement(key);
+      Country.list[key].immigrate(key); //immigrate labor
+      Country.list[key].capitalMovement(key); //immigrate capital
     }
   }
 }
 
 function resetDemandCountry(){
   for(var key in Country.list){
-    Country.list[key].resetDemand(key);
+    Country.list[key].resetDemand(key); //at the end of each day reset the demand of countries
   }
 }
 function resetDemandMarket(){
   for(key in Market.list){
-    Market.list[key].resetDay(); 
+    Market.list[key].resetDay();  //at the end of the day reset the demand of markets
   }
 }
 
@@ -520,23 +621,23 @@ function resetDemand(){
 
 function upgrade(){
     for(var key3 in Competitor.list){
-   // Business.list[key2].generateExpenseFactor();
-    Competitor.list[key3].upgrade() 
+    Competitor.list[key3].upgrade() //Loop through comeptitors and upgrade companies
   }
 }
 
 function shocks(){
   for(var key in Country.list){
-    Country.list[key].countryShock(key);
+    Country.list[key].countryShock(key); //Loop through countries and let shocks occur
   }
 }
 
-start_game();
+
 
 Tick = function(){
 
   
   resetDemand();
+
   produceGoods();
   
   demandOfFactors();
@@ -545,16 +646,11 @@ Tick = function(){
 
   shocks();
 
-  
-
   generatePrice();
-
 
   exchangeGoods();
 
-  checkCashFlow();
-
-  
+  checkCashFlow();  
 
   //InvestmentCapital();
 
@@ -562,16 +658,9 @@ Tick = function(){
  
   player.upgrade();
   player.produce(); 
+
   updateUI();
   immigration();
-
-/*
-  updateChart();
-  Market.list["labor"].updateChartLabor();
-  Market.list["capital"].updateChartCapital();
-
-*/
-
 
   
   addBusinesses()
@@ -579,16 +668,88 @@ Tick = function(){
   
 }
 
-generateMarket();
-generateCountry();
-            
-Competitor.generate(20, "random", "random"); //Generate competitor
 
 
-modifyDOM();
+
+start_game = function(){
+     //when the <submit> button is clicked
+    $('#businessSubmitDefault').click(function(){
+    //store the user's entry in a variable
+      var name = document.getElementById('name').value; //find business name
+      var sector = document.getElementById("sectorPrices").value; //find sector
+      var capital = parseFloat(document.getElementById('capital').value); //find business name
+      var employees = parseFloat(document.getElementById('employees').value); //find business name
+      $( ".intro" ).hide();
+     
+      $( ".overview" ).show();
+
+
+      player = new Player("Ed", "Primary", 2, 2, 20, 'player',2,10, "France");
+
+      player.cash = 50;
+
+
+      $("#companyName").append(player.name);
+      $("#numberEmployees").append(player.employees);
+      $("#numberCapital").append(player.capital);
+      $("#foreCastedIncome").append(player.income-player.expenses);
+      $("#cash").append(player.cash);
+      generateMarket();
+      generateCountry();
+                  
+      Competitor.generate(20, "random", "random"); //Generate competitor
+
+      modifyDOM();
+      generateChartsMarket();
+
+      //update the html in the second form to show the user's entered name  
+      Tick();
+      });
+    $('#businessSubmitCustom').click(function(){
+    //store the user's entry in a variable
+
+
+  
+    var name = document.getElementById('name').value; //find business name
+    var sector = document.getElementById("sectorPrices").value; //find sector
+    var capital = parseFloat(document.getElementById('capital').value); //find business name
+    var employees = parseFloat(document.getElementById('employees').value); //find business name
+    $( ".intro" ).hide();
+   
+    $( ".overview" ).show();
+
+
+    player = new Player("Ed", "Primary", 2, 2, 20, 'player',2,10, "France");
+
+    player.cash = 50;
+
+    var countryName = document.getElementById('countryName').value;
+    var capitalSupply = filterInt(document.getElementById('capitalSupply').value);
+    var laborSupply = filterInt(document.getElementById('laborSupply').value);
+    var landSupply = filterInt(document.getElementById('landSupply').value);
+
+
+    $("#companyName").append(player.name);
+    $("#numberEmployees").append(player.employees);
+    $("#numberCapital").append(player.capital);
+    $("#foreCastedIncome").append(player.income-player.expenses);
+    $("#cash").append(player.cash);
+
+    generateCountry();
+    new Country(countryName, capitalSupply,laborSupply,landSupply);
+    countries.push(countryName);
+    generateMarket();          
+    Competitor.generate(100, "random", "random"); //Generate competitor
+
+    modifyDOM();
+    generateChartsMarket();
+    //update the html in the second form to show the user's entered name  
+    Tick();
+    });
+}
 
  
-
+start_game();
 </script>
 
 <script src="files/chartdata.js"></script>
