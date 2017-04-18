@@ -46,6 +46,10 @@ function updateSectorPrices(){
 	        	visits: Market.list[key].price,
 	        })
 
+	        if(w[simple+Market.list[key].sector+"_data"].length>30){
+	        	w[simple+Market.list[key].sector+"_data"].splice(0,1);
+	        }
+
 	        w[simple+Market.list[key].sector].validateData();
 	        table.append(sector);
 	        sector.append(name);
@@ -85,6 +89,10 @@ function updateCountryPrices(){
 		        	date: game.tickCount,
 		        	visits: country[key2].price,
 		        })
+
+		        if(w[simple+country[key2].name+"_data"].length>30){
+		        	w[simple+country[key2].name+"_data"].splice(0,1);
+		        }
 
 		        w[simple+country[key2].name].validateData();
 		        	

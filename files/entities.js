@@ -218,6 +218,9 @@ CapitalPrices = {};
           self.networth += self.cashFlow;
           if(self.cash<-2){
             delete player;
+            console.log("Death")
+            $( ".overview" ).hide();
+            $( ".endScreen" ).show();
           }
         }
 
@@ -771,30 +774,6 @@ CapitalPrices = {};
 
 
 
-          self.updateChartLabor = function(){
-            if (typeof chartDataLabor == 'undefined') {
-              chartDataLabor = [];
-            }
-            chartDataLabor.push({
-              date: game.tickCount,
-              visits: self.price,
-            });
-            priceLabor.validateData();
-            return chartDataLabor;
-            }
-
-          self.updateChartCapital = function(){
-            if (typeof chartDataCapital == 'undefined') {
-              chartDataCapital = [];
-            }
-            chartDataCapital.push({
-              date: game.tickCount,
-              visits: self.price,
-            });
-            priceCapital.validateData();
-            return chartDataCapital;
-            }
-    
         
 
           Market.list[id] = self;

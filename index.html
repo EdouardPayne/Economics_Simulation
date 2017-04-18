@@ -58,15 +58,14 @@
                     </div>
                     
                   </form>
-                  <button class="btn btn-default" id="customSubmit" style="
-    float: left">Add Custom Country</button> 
+                  <button class="btn btn-default" id="customSubmit" style="float: left">Add Custom Country</button> 
                   <div id="alternate"> OR
                     <button id="businessSubmitDefault" class="btn btn-default" class="form-control">Submit Business Details</button>
                     </br>
                   </div>
                   </br>
                   <div id="customCountries">
-                  <form>
+                  <form>  
                     <div class="form-group">
                       <input type="text" class="form-control" id="countryName" placeholder="Country Name">
                     </div>
@@ -99,7 +98,7 @@
                     <li><a data-toggle="tab" href="#managePage">Manage Business</a></li>
                     <li><a data-toggle="tab" href="#diagramPage">Statistics</a></li>
                 </ul>
-              </div>
+            </div>
               <div class="row">
                 <div class="col-md-2">
                   <h2>
@@ -176,11 +175,12 @@
                         <div class="row">
                           <div class="col-md-9" id="updateProductionDetails">
                             <h3>Update Production Details</h3>
+                            <p>You are only able to produce once per day! To produce output again press "Simulate Next Day"</p>
 
                             <form>
                               <input input type="number" id="capitalUpdate" placeholder="Update Capital Amount" onkeyup="businessAdvice()"></input>
                               <input input type="number" id="employeesUpdate" placeholder="Update Employee Amount" onkeyup="businessAdvice()"></input>
-                              <button type='button' id="productionCreate">Produce Output</button>
+                              <button type='button' class="btn btn-primary" id="productionCreate">Produce Output</button>
                             </form>
                               <div class="row">
                                 <div class="col-md-6">
@@ -219,7 +219,8 @@
                             <h3>Sell Output</h3>
                             <form>
                               <input input type="number" id="sellAmount" placeholder="Select Amount you want to sell"></input>
-                              <button type='button' id="sellOutput">Sell Ouput</button>
+                            </br>
+                              <button type='button' class="btn btn-primary"  id="sellOutput">Sell Output</button>
                             </form>
                           </div>
                         </div>
@@ -233,7 +234,32 @@
                         <button type="button" class="btn btn-primary" id="mediumFirm" disabled>Medium Firm</button>
                         <button type="button" class="btn btn-primary" id="largeFirm" disabled>Large Firm</button>
                         <p>Upgrading your business provides a wide range of unlocked functionality and benefits.</p>
-
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Upgrade</th>
+                                <th>Cost</th>
+                                <th>Benefits</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>Start-up</td>
+                                <td>25</td>
+                                <td>*2 Reduction on Costs. *2 Increase in Income. *5 Increase in capacity.</td>
+                              </tr>
+                              <tr>
+                                <td>Medium Firm</td>
+                                <td>5000</td>
+                                <td>*2 Reduction on Costs. *2 Increase in Income. *5 Increase in capacity. Ability to change sector</td>
+                              </tr>
+                              <tr>
+                                <td>Large Firm</td>
+                                <td>5000000</td>
+                                <td>*2 Reduction on costs. *2 Increase in income. *5 Increase in capacity. Ability to change country</td>
+                              </tr>
+                            </tbody>
+                          </table>
 
                         </div>
 
@@ -272,19 +298,27 @@
 
               </div>
 
-              </div>  
-            </div>
-         
+          </div> 
 
+          <div class="row endScreen">
+            <div class="col-md-12">
+              <h2>End Game</h2>
+              <button onClick="window.location.reload();">Start New Game</button>
+            </div>
+          </div> 
+    </div>
+         
+                
     
   </body>
 
 
     <script>
- $( ".overview" ).hide();
+
  $("#customCountries").hide();
     var game = {
       tickCount:0,
+      produced:1,
     }
 
 var filterInt = function(value) {
@@ -293,7 +327,20 @@ var filterInt = function(value) {
   return NaN;
 }
 
+newGame = function(){
+  $( ".intro" ).show();
+  $( ".overview" ).hide();
+  $( ".endScreen" ).hide();
 
+  Competitor.list = {}
+  Market.list = {};
+  Country.list = {};
+  markets = []
+  countries = []
+}
+  $( ".intro" ).show();
+  $( ".overview" ).hide();
+  $( ".endScreen" ).hide();
 
 
 modifyDOM = function(){ //this function aims to modify the DOM to display the custom countires
@@ -423,8 +470,8 @@ businessAdvice = function(){
       $("#incomeOutput").text(income.totalIncome); //from the price and output work out the total income
       $("#profitGoods").text(round((income.totalIncome)-(cost.totalCost),2)); //work out the profit
       output = employees*capital
-      if((output) > (player.capcity)){sellOutput //check if the output is above the player capacity
-        $("#businessAdviceOUTPUT").text('You are producing over-capacity, upgrade your business to be able to produce more. Your capcity is ' + player.capcity + ' and you are producing ' + output + '. The penalty of producing over capcity is a -'+ round((((output)-income.output)/output)*100,2) + '% decrease on final output.'); //If so display the warning explaining the issue
+      if((output) > (player.capacity)){sellOutput //check if the output is above the player capacity
+        $("#businessAdviceOUTPUT").text('You are producing over-capacity, upgrade your business to be able to produce more. Your capcity is ' + player.capacity + ' and you are producing ' + output + '. The penalty of producing over capcity is a -'+ round((((output)-income.output)/output)*100,2) + '% decrease on final output.'); //If so display the warning explaining the issue
       } else{
          $("#businessAdviceOUTPUT").text(""); //If not everything is great!
       }
@@ -458,7 +505,9 @@ updateProductionDetails = function(){
       $("#numberCapital").text(player.capital);
 
       player.produceOutput(player.employees,player.capital); //produce the output from the capital and employees
-
+      player.checkCashFlow();
+      game.produced = 0;
+      validateStock();
 
 
   });
@@ -500,7 +549,7 @@ sellStock = function(){ //sell the stock of your business
     amount=Number(document.getElementById('sellAmount').value);
     if(amount<=player.stock){
       player.sellOutput(amount);
-      validateStock();
+      
       checkUpgrades();
     }
     
@@ -508,10 +557,10 @@ sellStock = function(){ //sell the stock of your business
 }
 
 validateStock = function(){ //validate the next day
-  if(game.tickCount == 1 && player.stock == 0){
-     $('#nextday').attr("disabled", true);
+  if(game.produced == 0){
+     $('#productionCreate').attr("disabled", true);
   } else{
-    $('#nextday').attr("disabled", false);
+    $('#productionCreate').attr("disabled", false);
   }
 }
 
@@ -635,7 +684,9 @@ function shocks(){
 
 Tick = function(){
 
-  
+  game.produced = 1;
+  validateStock();
+
   resetDemand();
 
   produceGoods();
@@ -660,7 +711,7 @@ Tick = function(){
   player.produce(); 
 
   updateUI();
-  immigration();
+  //immigration();
 
   
   addBusinesses()
